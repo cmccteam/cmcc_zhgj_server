@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 //import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 
 
-
+// Ã·Ωª≤‚ ‘
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
