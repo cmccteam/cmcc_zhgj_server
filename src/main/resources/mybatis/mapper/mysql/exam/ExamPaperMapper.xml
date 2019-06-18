@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.exam.dao.ExamPaperDao">
+  <resultMap id="BaseResultMap" type="com.cmcc.exam.entity.ExamPaper">
+    <id column="paper_id" jdbcType="VARCHAR" property="paperId" />
+    <result column="paper_title" jdbcType="VARCHAR" property="paperTitle" />
+    <result column="paper_brief" jdbcType="VARCHAR" property="paperBrief" />
+    <result column="create_name" jdbcType="VARCHAR" property="createName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="total" jdbcType="INTEGER" property="total" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    paper_id, paper_title, paper_brief, create_name, create_time, send_time, remark, 
+    total
+  </sql>
+  
+  <!-- 分页查询所有考试列表-->
+  <select id="selectPage" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    ep.paper_id,
+    ep.paper_title,
+    ep.paper_brief,
+    ep.create_name,
+    ep.create_time,
+    ep.send_time,
+    ep.remark,
+    ep.total,
+    ep.status
+    from da_exam_paper ep
+	LEFT JOIN da_exam_user eu on eu.paper_id=ep.paper_id
+ 	<where>
+    	<if test="paperTitle != null">
+        AND ep.paper_title like CONCAT('%',#{paperTitle},'%')
+      </if>
+      <if test="userId != null">
+        eu.user_id=#{userId}
+      </if>
+    </where>
+  </select>
+	
+  <!-- 分页查询所有考试列表-->
+  <select id="selectMyPage" parameterType="java.lang.String" resultType="map">
+    select 
+    ep.paper_id paperId,
+    ep.paper_title paperTitle,
+    ep.paper_brief paperBrief,
+    ep.create_name createName,
+    ep.create_time createTime,
+    ep.send_time sendTime,
+    ep.remark,
+    ep.total,
+    ep.status,
+    eu.status isEnd
+    from da_exam_paper ep
+	LEFT JOIN da_exam_user eu on eu.paper_id=ep.paper_id
+ 	where ep.status = '0'
+    	<if test="paperTitle != null">
+        AND ep.paper_title like CONCAT('%',#{paperTitle},'%')
+      </if>
+      <if test="userId != null">
+        eu.user_id=#{userId}
+      </if>
+  </select>
+  	  
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from da_exam_paper
+    where paper_id = #{paperId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from da_exam_paper
+    where paper_id = #{paperId,jdbcType=VARCHAR}
+  </delete>
+  <!-- 删除未发布的试卷 -->
+  <delete id="deleteSendPaper" parameterType="java.lang.String">
+    delete from da_exam_paper
+    where paper_id = #{paperId,jdbcType=VARCHAR} AND status !='0'
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.cmcc.exam.entity.ExamPaper">
+    insert into da_exam_paper (paper_id, paper_title, paper_brief, 
+      create_name, create_time, send_time, 
+      remark, total)
+    values (#{paperId,jdbcType=VARCHAR}, #{paperTitle,jdbcType=VARCHAR}, #{paperBrief,jdbcType=VARCHAR}, 
+      #{createName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{sendTime,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR}, #{total,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmcc.exam.entity.ExamPaper">
+    insert into da_exam_paper
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="paperId != null">
+        paper_id,
+      </if>
+      <if test="paperTitle != null">
+        paper_title,
+      </if>
+      <if test="paperBrief != null">
+        paper_brief,
+      </if>
+      <if test="createName != null">
+        create_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="sendTime != null">
+        send_time,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+       <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="paperId != null">
+        #{paperId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperTitle != null">
+        #{paperTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="paperBrief != null">
+        #{paperBrief,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sendTime != null">
+        #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.exam.entity.ExamPaper">
+    update da_exam_paper
+    <set>
+      <if test="paperTitle != null">
+        paper_title = #{paperTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="paperBrief != null">
+        paper_brief = #{paperBrief,jdbcType=VARCHAR},
+      </if>
+      <if test="createName != null">
+        create_name = #{createName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sendTime != null">
+        send_time = #{sendTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where paper_id = #{paperId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmcc.exam.entity.ExamPaper">
+    update da_exam_paper
+    set paper_title = #{paperTitle,jdbcType=VARCHAR},
+      paper_brief = #{paperBrief,jdbcType=VARCHAR},
+      create_name = #{createName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      total = #{total,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR}
+    where paper_id = #{paperId,jdbcType=VARCHAR}
+  </update>
+</mapper>
