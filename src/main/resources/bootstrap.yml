@@ -1,0 +1,16 @@
+spring:
+  application:
+  #指定了配置文件的应用名
+    name: user-server
+  cloud:
+    config:
+      uri: http://172.10.0.178:9500/
+      #指定的环境
+      profile: dev
+      #指定分支
+      label: Develop
+
+management:
+  security:
+    #SpringBoot 1.5.X 以上默认开通了安全认证，如果不关闭会要求权限
+    enabled: false

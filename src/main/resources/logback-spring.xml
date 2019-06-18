@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<logger name="com.cmcc.system.dao" level="DEBUG" />
+	<logger name="com.codingapi" level="DEBUG" />
+    <!-- Logstash日志 -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <!-- 远程Logstash的IP：PORT -->
+        <destination>172.10.0.178:9690</destination>
+        <!-- encoder必须要有，是logback和logstash的纽带 -->
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- 用户自定义Json字符串，用于向logstash提交额外的自定义属性。可在logstash的input里接收该参数 -->
+            <customFields>{"appName":"user-server"}</customFields>
+        </encoder>
+    </appender>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+ 
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="LOGSTASH" />
+    </root>
+</configuration>
