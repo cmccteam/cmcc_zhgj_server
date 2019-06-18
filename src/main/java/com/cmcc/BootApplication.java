@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 //import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 
 
-// Ã·Ωª≤‚ ‘
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
@@ -24,20 +23,20 @@ import org.springframework.web.client.RestTemplate;
 @ServletComponentScan
 public class BootApplication {
 
-	@Autowired
-	RestTemplateBuilder builder;
+    @Autowired
+    RestTemplateBuilder builder;
 
-	public static void main(String[] args) {
-		SpringApplication.run(BootApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(BootApplication.class, args);
+    }
 
-	@Bean
-	public RestTemplate restTemplate() {
-		return builder.build();
-	}
+    @Bean
+    public RestTemplate restTemplate() {
+        return builder.build();
+    }
 
-	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
