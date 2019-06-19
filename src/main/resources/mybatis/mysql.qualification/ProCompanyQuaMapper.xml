@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.qualification.dao.ProCompanyQuaDao">
+  <!-- 根据公司名称模糊查询公司资质表返回完整的公司名称和id -->
+  <select id="getList" parameterType="java.lang.String" resultType="java.util.Map">
+    select 
+      comq_id as comqId,
+      comq_name as comqName 
+    from 
+      pro_company_qua 
+    where 
+      comq_name like CONCAT('%', #{comqNameOrComqPinyin}, '%') or comp_pinyin like CONCAT('%', #{comqNameOrComqPinyin}, '%');
+  </select>
+  
+  <!-- 根据完整公司名称(或者公司id)查询公司资质表 getCompanyInfo -->
+  <select id="getCompanyInfo" parameterType="java.lang.String" resultType="com.cmcc.qualification.entity.ProCompanyQua">
+    select 
+      comq_id as comqId,
+      comq_name as comqName,
+      comq_code as comqCode,
+      business_scope as businessScope,
+      business_deadline as businessDeadline,
+      reg_place as regPlace,
+      file_url as fileUrl,
+      create_user as createUser,
+      remark 
+    from 
+      pro_company_qua 
+    where 
+      comq_id = #{comqId};
+  </select>
+  
+  <!-- selectAllProCompanyQuas 查询所有公司信息  -->
+  <select id="selectAllProCompanyQuas" resultType="com.cmcc.qualification.entity.ProCompanyQua">
+    select 
+      comq_id as comqId,
+      comq_name as comqName,
+      comq_pinyin as comqPinyin 
+    from 
+      pro_company_qua
+  </select>
+  
+  <!-- 根据公司资质id更新公司信息 -->
+  <update id="saveProCompanyQua" parameterType="com.cmcc.qualification.entity.ProCompanyQua">
+    update pro_company_qua 
+    <set>
+      <if test="comqName != null" >
+        comq_name = #{comqName},
+      </if>
+      <if test="comqCode != null" >
+        comq_code = #{comqCode},
+      </if>
+      <if test="businessScope != null" >
+        business_scope = #{businessScope},
+      </if>
+      <if test="businessDeadline != null" >
+        business_deadline = #{businessDeadline},
+      </if>
+      <if test="regPlace != null" >
+        reg_place = #{regPlace},
+      </if>
+      <if test="fileUrl != null" >
+        file_url = #{fileUrl},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark},
+      </if>
+    </set>
+    where 
+      comq_id = #{comqId}
+  </update>
+  
+  <!-- 新增公司信息 -->
+  <insert id="addProCompanyQua" parameterType="com.cmcc.qualification.entity.ProCompanyQua">
+    insert into pro_company_qua 
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="comqId != null" >
+        comq_id,
+      </if>
+      <if test="comqName != null" >
+        comq_name,
+      </if>
+      <if test="comqPinyin != null" >
+        comq_pinyin,
+      </if>
+      <if test="comqCode != null" >
+        comq_code,
+      </if>
+      <if test="businessScope != null" >  
+        business_scope,
+      </if>
+      <if test="businessDeadline != null" >  
+        business_deadline,
+      </if>
+      <if test="regPlace != null" >  
+        reg_place,
+      </if>
+      <if test="fileUrl != null" >  
+        file_url,
+      </if>
+      <if test="createUser != null" >  
+        create_user,
+      </if>  
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="comqId != null" >  
+        #{comqId},
+      </if>
+      <if test="comqName != null" > 
+        #{comqName},
+      </if>
+      <if test="comqPinyin != null" > 
+        #{comqPinyin},
+      </if>
+      <if test="comqCode != null" >  
+        #{comqCode},
+      </if>
+      <if test="businessScope != null" >  
+        #{businessScope},
+       </if>
+      <if test="businessDeadline != null" >
+        #{businessDeadline},
+      </if>
+      <if test="regPlace != null" >
+        #{regPlace},
+      </if>
+      <if test="fileUrl != null" >
+        #{fileUrl},
+      </if>
+      <if test="createUser != null" >  
+        #{createUser},
+      </if>
+      <if test="remark != null" >
+        #{remark},
+      </if>
+    </trim>
+  </insert> 
+</mapper>
