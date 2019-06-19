@@ -1,33 +1,18 @@
 package com.cmcc.common.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 
@@ -204,6 +189,21 @@ public class ExcelUtil {
 		return map;
 	}
 
+	private static Map<String, Object> dataObj(Object obj, Row row){
+		Class<?> rowClazz = obj.getClass();
+		Field[] fields = FieldUtils.getAllFields(rowClazz);
+		if (fields == null || fields.length < 1) {
+			return null;
+		}
+		// 容器
+		Map<String, Object> map = new HashMap<String, Object>();
+		// 注意excel表格字段顺序要和obj字段顺序对齐 （如果有多余字段请另作特殊下标对应处理）
+		for (int j = 0; j < fields.length; j++) {
+			map.put(fields[j].getName(), getVal(row.getCell(j)));
+		}
+		return map;
+	}
+
 	private static String getVal(Cell cell) {
 		String cellValue = "";
 		if (cell == null) {
@@ -258,10 +258,6 @@ public class ExcelUtil {
 	
 	/**
 	 * 创建excel文档并写入outStream输出流中
-	 * @param outStream
-	 * @param mainTitle
-	 * @param titles
-	 * @param contents
 	 */
 	public static HSSFWorkbook exportExcel(Class<?> clazz, List<Map<String,Object>> dataList) {
 		HSSFWorkbook wb = null;
@@ -325,5 +321,42 @@ public class ExcelUtil {
 			}
 		}
         return wb;
+	}
+
+	public static List<Map<String, Object>> importExcel(MultipartFile file, Object obj) throws IOException{
+		// 判断Excel文件的版本
+		String filename = file.getOriginalFilename();
+		boolean isExcel2003 = true;
+		if (filename.matches("^.+\\.(?i)(xlsx)$")) {
+			isExcel2003 = false;
+		}
+		// 装载流
+		InputStream is = file.getInputStream();
+		Workbook hw = null;
+		if (isExcel2003) {
+			hw = new HSSFWorkbook(is);
+		} else {
+			hw = new XSSFWorkbook(is);
+		}
+		// 获取第一个sheet页
+		// 获取Excel文件的第一页sheet，判断是否有信息
+		Sheet sheet = hw.getSheetAt(0);
+
+		// 容器
+		List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+
+		// 遍历行 从下标第一行开始（去除标题）
+		for (int i = 1; i < sheet.getLastRowNum(); i++) {
+			try{
+				Row row = sheet.getRow(i);
+				if (row != null) {
+					// 装载obj
+					ret.add(dataObj(obj, row));
+				}
+			}catch(Exception e){
+				log.error("导入第"+i+"题目时，出现异常，"+e.getMessage());
+			}
+		}
+		return ret;
 	}
 }

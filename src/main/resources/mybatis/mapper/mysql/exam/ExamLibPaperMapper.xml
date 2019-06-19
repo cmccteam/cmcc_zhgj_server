@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.exam.dao.ExamLibPaperDao">
+  <resultMap id="BaseResultMap" type="com.cmcc.exam.entity.ExamLibPaper">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="lib_id" jdbcType="VARCHAR" property="libId" />
+    <result column="paper_id" jdbcType="VARCHAR" property="paperId" />
+    <result column="lib_type" jdbcType="VARCHAR" property="libType" />
+    <result column="lib_title" jdbcType="VARCHAR" property="libTitle" />
+    <result column="lib_content_one" jdbcType="VARCHAR" property="libContentOne" />
+    <result column="lib_content_two" jdbcType="VARCHAR" property="libContentTwo" />
+    <result column="lib_content_three" jdbcType="VARCHAR" property="libContentThree" />
+    <result column="lib_content_four" jdbcType="VARCHAR" property="libContentFour" />
+    <result column="lib_ok" jdbcType="VARCHAR" property="libOk" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, lib_id, paper_id, lib_type, lib_title, lib_content_one, lib_content_two, lib_content_three, 
+    lib_content_four, lib_ok, sort
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from da_exam_lib_paper
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from da_exam_lib_paper
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.cmcc.exam.entity.ExamLibPaper">
+    insert into da_exam_lib_paper (id, lib_id, paper_id, 
+      lib_type, lib_title, lib_content_one, 
+      lib_content_two, lib_content_three, lib_content_four, 
+      lib_ok, sort)
+    values (#{id,jdbcType=VARCHAR}, #{libId,jdbcType=VARCHAR}, #{paperId,jdbcType=VARCHAR}, 
+      #{libType,jdbcType=VARCHAR}, #{libTitle,jdbcType=VARCHAR}, #{libContentOne,jdbcType=VARCHAR}, 
+      #{libContentTwo,jdbcType=VARCHAR}, #{libContentThree,jdbcType=VARCHAR}, #{libContentFour,jdbcType=VARCHAR}, 
+      #{libOk,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmcc.exam.entity.ExamLibPaper">
+    insert into da_exam_lib_paper
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="libId != null">
+        lib_id,
+      </if>
+      <if test="paperId != null">
+        paper_id,
+      </if>
+      <if test="libType != null">
+        lib_type,
+      </if>
+      <if test="libTitle != null">
+        lib_title,
+      </if>
+      <if test="libContentOne != null">
+        lib_content_one,
+      </if>
+      <if test="libContentTwo != null">
+        lib_content_two,
+      </if>
+      <if test="libContentThree != null">
+        lib_content_three,
+      </if>
+      <if test="libContentFour != null">
+        lib_content_four,
+      </if>
+      <if test="libOk != null">
+        lib_ok,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="libId != null">
+        #{libId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperId != null">
+        #{paperId,jdbcType=VARCHAR},
+      </if>
+      <if test="libType != null">
+        #{libType,jdbcType=VARCHAR},
+      </if>
+      <if test="libTitle != null">
+        #{libTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentOne != null">
+        #{libContentOne,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentTwo != null">
+        #{libContentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentThree != null">
+        #{libContentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentFour != null">
+        #{libContentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="libOk != null">
+        #{libOk,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.exam.entity.ExamLibPaper">
+    update da_exam_lib_paper
+    <set>
+      <if test="libId != null">
+        lib_id = #{libId,jdbcType=VARCHAR},
+      </if>
+      <if test="paperId != null">
+        paper_id = #{paperId,jdbcType=VARCHAR},
+      </if>
+      <if test="libType != null">
+        lib_type = #{libType,jdbcType=VARCHAR},
+      </if>
+      <if test="libTitle != null">
+        lib_title = #{libTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentOne != null">
+        lib_content_one = #{libContentOne,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentTwo != null">
+        lib_content_two = #{libContentTwo,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentThree != null">
+        lib_content_three = #{libContentThree,jdbcType=VARCHAR},
+      </if>
+      <if test="libContentFour != null">
+        lib_content_four = #{libContentFour,jdbcType=VARCHAR},
+      </if>
+      <if test="libOk != null">
+        lib_ok = #{libOk,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cmcc.exam.entity.ExamLibPaper">
+    update da_exam_lib_paper
+    set lib_id = #{libId,jdbcType=VARCHAR},
+      paper_id = #{paperId,jdbcType=VARCHAR},
+      lib_type = #{libType,jdbcType=VARCHAR},
+      lib_title = #{libTitle,jdbcType=VARCHAR},
+      lib_content_one = #{libContentOne,jdbcType=VARCHAR},
+      lib_content_two = #{libContentTwo,jdbcType=VARCHAR},
+      lib_content_three = #{libContentThree,jdbcType=VARCHAR},
+      lib_content_four = #{libContentFour,jdbcType=VARCHAR},
+      lib_ok = #{libOk,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
