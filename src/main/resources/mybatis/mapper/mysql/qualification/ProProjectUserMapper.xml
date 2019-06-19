@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cmcc.qualification.dao.ProProjectUserDao">
+  <resultMap id="BaseResultMap" type="com.cmcc.qualification.entity.ProProjectUser">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="project_id" jdbcType="VARCHAR" property="projectId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="post" jdbcType="VARCHAR" property="post" />
+    <result column="into_time" jdbcType="DATE" property="intoTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, project_id, user_id, project_name, post, into_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_project_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_project_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.cmcc.qualification.entity.ProProjectUser">
+    insert into pro_project_user (id, project_id, user_id, 
+      project_name, post, into_time
+      )
+    values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{projectName,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR}, #{intoTime,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cmcc.qualification.entity.ProProjectUser">
+    insert into pro_project_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="post != null">
+        post,
+      </if>
+      <if test="intoTime != null">
+        into_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="post != null">
+        #{post,jdbcType=VARCHAR},
+      </if>
+      <if test="intoTime != null">
+        #{intoTime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.qualification.entity.ProProjectUser">
+    update pro_project_user
+    <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="post != null">
+        post = #{post,jdbcType=VARCHAR},
+      </if>
+      <if test="intoTime != null">
+        into_time = #{intoTime,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <!-- 根据用户id更新人员信息 -->
+  <update id="updateByUserId" parameterType="com.cmcc.qualification.entity.ProProjectUser">
+    update pro_project_user
+    <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="post != null">
+        post = #{post,jdbcType=VARCHAR},
+      </if>
+      <if test="intoTime != null">
+        into_time = #{intoTime,jdbcType=DATE},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR} and id = #{id,jdbcType=VARCHAR} 
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.cmcc.qualification.entity.ProProjectUser">
+    update pro_project_user
+    set project_id = #{projectId,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      post = #{post,jdbcType=VARCHAR},
+      into_time = #{intoTime,jdbcType=DATE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
