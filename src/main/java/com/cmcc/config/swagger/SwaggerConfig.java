@@ -52,8 +52,8 @@ public class SwaggerConfig {
 
 	private ApiInfo myApiInfo() {
 		return new ApiInfoBuilder()
-				.title("人员部门信息接口")
-				.description("人员部门相关接口，用于测试")
+				.title("智慧工建项目接口")
+				.description("智慧工建项目相关接口，用于测试")
                 .version("1.0")
 				.build();
 	}

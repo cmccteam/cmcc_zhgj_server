@@ -1,11 +1,10 @@
 package com.cmcc.know.dao;
 
-import java.util.List;
-
+import com.cmcc.know.entity.KnowType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.cmcc.know.entity.KnowType;
+import java.util.List;
 
 @Mapper
 public interface KnowTypeDao {
@@ -21,15 +20,14 @@ public interface KnowTypeDao {
 
     int updateByPrimaryKey(KnowType record);
 
-	List<KnowType> selectAll();
+    List<KnowType> selectAll();
 
-	/**
-	 * 
-	 * @Description: TODO 根据类型名称查询 
-	 * @param typeName 类型名称
-	 * @return KnowType  
-	 * @author zengzhibin
-	 * @date 2019年3月4日
-	 */
-	KnowType selectByTypeName(@Param("typeName") String typeName);
+    /**
+     * @param typeName 类型名称
+     * @return KnowType
+     * @Description: TODO 根据类型名称查询
+     * @author zengzhibin
+     * @date 2019年3月4日
+     */
+    KnowType selectByTypeName(@Param("typeName") String typeName);
 }
