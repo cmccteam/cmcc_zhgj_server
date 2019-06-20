@@ -1,10 +1,12 @@
 package com.cmcc.qualification.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import com.cmcc.qualification.dao.ProPertificateDao;
 import com.cmcc.qualification.entity.ProCompanyQua;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.service.CompanyQualificationService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 /**
  * 公司资质管理业务层
  * @author Administrator
@@ -44,8 +48,11 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 	@Transactional
 	public Integer add(ProCompanyQua proCompanyQua, ProPertificate proPertificate) {
 		proCompanyQua.setComqId(IdGenerateUtil.uuid3());
+		proCompanyQua.setCreateTime(new Date());
+		proPertificate.setFileUrl(proCompanyQua.getFileUrls());
 		proPertificate.setCertificateId(IdGenerateUtil.uuid3());
 		proPertificate.setFkcertId(proCompanyQua.getComqId());
+		proPertificate.setCreateTime(new Date());
 		Integer t = proCompanyQuaDao.addProCompanyQua(proCompanyQua);
 		Integer f = proPertificateDao.addProPertificate(proPertificate);
 		return t+f;
@@ -74,6 +81,12 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 		    }
 		 }
 		return Sort.sortCampany(resultMap);
+	}
+
+	@Override
+	public Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize) {
+		PageHelper.startPage(pageNum, pageSize);
+		return proCompanyQuaDao.selectAllCompanyQuas();
 	}
 
 	

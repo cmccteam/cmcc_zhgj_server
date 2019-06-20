@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.cmcc.qualification.entity.ProCompanyQua;
 import com.cmcc.qualification.entity.ProPertificate;
+import com.github.pagehelper.Page;
 
 /**
  * 公司资质管理业务层
@@ -48,5 +49,13 @@ public interface CompanyQualificationService {
 	 * @return
 	 */
 	Map<String, List<ProCompanyQua>> getAllProCompanyQua();
+
+	/**
+	 * 后台管理查询公司列表
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize);
 
 }

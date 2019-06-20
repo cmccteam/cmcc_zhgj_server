@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cmcc.common.bean.Result;
@@ -18,6 +19,7 @@ import com.cmcc.common.bean.ResultCode;
 import com.cmcc.qualification.entity.ProCompanyQua;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.service.CompanyQualificationService;
+import com.github.pagehelper.Page;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -173,6 +175,36 @@ public class CompanyQualificationController{
 		}
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
 	}
+    
+    /**
+     * 
+     * @Description: 后台管理查询公司列表
+     * @return Result  
+     * @author liuhaihe
+     * @date 2019年6月19日
+     */
+    @ApiOperation(value="后台管理查询公司列表", notes="后台管理查询公司列表")
+	@GetMapping("/allCompanyQuas")
+	public Result getAllCompanyQua(
+			@ApiParam(name="pageNum",value="页码，从1开始，默认为1",required=true)
+	        @RequestParam(value="pageNum",defaultValue="1")
+	        Integer pageNum,
+	        @ApiParam(name="pageSize",value="每页大小，默认为10",required=true)
+	        @RequestParam(value="pageSize",defaultValue="10")
+	        Integer pageSize){
+    	try {
+    		Page<ProCompanyQua> page = companyQualificationService.getProCompanyQua(pageNum,pageSize);
+    		if (page.size() > 0) {
+    			return Result.success(page.toPageInfo());
+    		} else {
+    			return Result.failure(ResultCode.RESULE_DATA_NONE);
+    		}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
+	
 
 
 }
