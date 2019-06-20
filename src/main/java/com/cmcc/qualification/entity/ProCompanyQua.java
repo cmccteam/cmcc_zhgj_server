@@ -25,13 +25,13 @@ public class ProCompanyQua{
 	@ApiParam(value="注册地点",required = false)
 	private String regPlace;
 	@ApiParam(value="营业执照图片地址",required = false)
-	private String fileUrl;
+	private String fileUrls;
 	@ApiParam(hidden=true)
 	private String createUser;
 	@ApiParam(hidden=true)
 	private Date createTime;
-	@ApiParam(value="备注",required = false)
-	private String remark;
+	@ApiParam(value="公司备注",required = false)
+	private String remarks;
 
 	public String getComqId() {
 		return comqId;
@@ -81,12 +81,12 @@ public class ProCompanyQua{
 		this.regPlace = regPlace;
 	}
 
-	public String getFileUrl() {
-		return fileUrl;
+	public String getFileUrls() {
+		return fileUrls;
 	}
 
-	public void setFileUrl(String fileUrl) {
-		this.fileUrl = fileUrl;
+	public void setFileUrls(String fileUrls) {
+		this.fileUrls = fileUrls;
 	}
 
 	public String getCreateUser() {
@@ -105,12 +105,12 @@ public class ProCompanyQua{
 		this.createTime = createTime;
 	}
 
-	public String getRemark() {
-		return remark;
+	public String getRemarks() {
+		return remarks;
 	}
 
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 
 	public String getComqPinyin() {

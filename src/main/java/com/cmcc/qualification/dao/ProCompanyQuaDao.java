@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.cmcc.qualification.entity.ProCompanyQua;
+import com.github.pagehelper.Page;
 
 
 /**
@@ -48,5 +49,11 @@ public interface ProCompanyQuaDao {
 	 * @return
 	 */
 	List<ProCompanyQua> selectAllProCompanyQuas();
+
+	/**
+	 * 后台管理查询公司列表
+	 * @return
+	 */
+	Page<ProCompanyQua> selectAllCompanyQuas();
 
 }

@@ -21,9 +21,9 @@
       business_scope as businessScope,
       business_deadline as businessDeadline,
       reg_place as regPlace,
-      file_url as fileUrl,
+      file_urls as fileUrls,
       create_user as createUser,
-      remark 
+      remarks 
     from 
       pro_company_qua 
     where 
@@ -38,6 +38,16 @@
       comq_pinyin as comqPinyin 
     from 
       pro_company_qua
+  </select>
+  
+  <!-- selectAllCompanyQuas 管理后台查询所有公司信息  -->
+  <select id="selectAllCompanyQuas" resultType="com.cmcc.qualification.entity.ProCompanyQua">
+    select 
+      comq_id as comqId,
+      comq_name as comqName,
+      comq_pinyin as comqPinyin 
+    from 
+      pro_company_qua order by business_deadline
   </select>
   
   <!-- 根据公司资质id更新公司信息 -->
@@ -59,11 +69,11 @@
       <if test="regPlace != null" >
         reg_place = #{regPlace},
       </if>
-      <if test="fileUrl != null" >
-        file_url = #{fileUrl},
+      <if test="fileUrls != null" >
+        file_urls = #{fileUrls},
       </if>
-      <if test="remark != null" >
-        remark = #{remark},
+      <if test="remarks != null" >
+        remarks = #{remarks},
       </if>
     </set>
     where 
@@ -95,14 +105,17 @@
       <if test="regPlace != null" >  
         reg_place,
       </if>
-      <if test="fileUrl != null" >  
-        file_url,
+      <if test="fileUrls != null" >  
+        file_urls,
       </if>
+      <if test="createTime != null" >  
+        create_time,
+      </if> 
       <if test="createUser != null" >  
         create_user,
       </if>  
-      <if test="remark != null" >
-        remark,
+      <if test="remarks != null" >
+        remarks,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -127,14 +140,17 @@
       <if test="regPlace != null" >
         #{regPlace},
       </if>
-      <if test="fileUrl != null" >
-        #{fileUrl},
+      <if test="fileUrls != null" >
+        #{fileUrls},
+      </if>
+      <if test="createTime != null" >  
+        #{createTime},
       </if>
       <if test="createUser != null" >  
         #{createUser},
       </if>
-      <if test="remark != null" >
-        #{remark},
+      <if test="remarks != null" >
+        #{remarks},
       </if>
     </trim>
   </insert> 
