@@ -56,6 +56,6 @@ public interface CompanyQualificationService {
 	 * @param pageSize
 	 * @return
 	 */
-	Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize);
+	Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize,String comqNameOrComqPinyin);
 
 }

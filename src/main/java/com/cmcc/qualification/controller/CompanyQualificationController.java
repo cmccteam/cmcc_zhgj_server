@@ -191,9 +191,11 @@ public class CompanyQualificationController{
 	        Integer pageNum,
 	        @ApiParam(name="pageSize",value="每页大小，默认为10",required=true)
 	        @RequestParam(value="pageSize",defaultValue="10")
-	        Integer pageSize){
+	        Integer pageSize,
+	        @ApiParam(name="comqNameOrComqPinyin",value="可以输入拼音和公司名称",required=false)
+			String comqNameOrComqPinyin){
     	try {
-    		Page<ProCompanyQua> page = companyQualificationService.getProCompanyQua(pageNum,pageSize);
+    		Page<ProCompanyQua> page = companyQualificationService.getProCompanyQua(pageNum,pageSize,comqNameOrComqPinyin);
     		if (page.size() > 0) {
     			return Result.success(page.toPageInfo());
     		} else {

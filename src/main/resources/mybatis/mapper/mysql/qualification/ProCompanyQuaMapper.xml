@@ -41,13 +41,17 @@
   </select>
   
   <!-- selectAllCompanyQuas 管理后台查询所有公司信息  -->
-  <select id="selectAllCompanyQuas" resultType="com.cmcc.qualification.entity.ProCompanyQua">
-    select 
-      comq_id as comqId,
-      comq_name as comqName,
-      comq_pinyin as comqPinyin 
+  <select id="selectAllCompanyQuas" parameterType="java.lang.String" resultType="com.cmcc.qualification.entity.ProCompanyQua">
+    select * 
     from 
-      pro_company_qua order by business_deadline
+      pro_company_qua 
+       <where>
+       1=1 
+       <if test="comqNameOrComqPinyin != null">
+        and comq_name like CONCAT('%', #{comqNameOrComqPinyin}, '%') or comq_pinyin like CONCAT('%', #{comqNameOrComqPinyin}, '%') 
+      </if>
+      order by business_deadline
+      </where>
   </select>
   
   <!-- 根据公司资质id更新公司信息 -->
