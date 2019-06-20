@@ -88,6 +88,13 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 		return proCompanyQuaDao.selectAllCompanyQuas(comqNameOrComqPinyin);
 	}
 
+	@Override
+	@Transactional
+	public Integer del(String comqId) {
+		proPertificateDao.deleteByFkcertId(comqId);
+		return proCompanyQuaDao.deleteByPrimaryKey(comqId);
+	}
+
 	
 
 }

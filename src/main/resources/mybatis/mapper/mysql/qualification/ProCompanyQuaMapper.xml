@@ -158,4 +158,9 @@
       </if>
     </trim>
   </insert> 
+  <!-- deleteByPrimaryKey -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from pro_company_qua
+    where comq_id = #{comqId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

@@ -127,4 +127,9 @@
     delete from pro_certificate
     where certificate_id = #{certificateId,jdbcType=VARCHAR}
   </delete>
+  <!-- 根据公司资质删除工资资质信息 -->
+  <delete id="deleteByFkcertId" parameterType="java.lang.String">
+    delete from pro_certificate
+    where fkcert_id = #{comqId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

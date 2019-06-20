@@ -58,4 +58,11 @@ public interface CompanyQualificationService {
 	 */
 	Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize,String comqNameOrComqPinyin);
 
+	/**
+	 * 根据公司资质id删除公司资质
+	 * @param comqId
+	 * @return
+	 */
+	Integer del(String comqId);
+
 }

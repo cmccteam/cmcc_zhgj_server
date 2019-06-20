@@ -57,4 +57,12 @@ public interface ProCompanyQuaDao {
 	 */
 	Page<ProCompanyQua> selectAllCompanyQuas(@Param(value="comqNameOrComqPinyin") String comqNameOrComqPinyin);
 
+	/**
+	 * 
+	 * 根据主键id删除公司资质信息
+	 * @param comqId
+	 * @return
+	 */
+	Integer deleteByPrimaryKey(String comqId);
+
 }
