@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -191,9 +192,11 @@ public class CompanyQualificationController{
 	        Integer pageNum,
 	        @ApiParam(name="pageSize",value="每页大小，默认为10",required=true)
 	        @RequestParam(value="pageSize",defaultValue="10")
-	        Integer pageSize){
+	        Integer pageSize,
+	        @ApiParam(name="comqNameOrComqPinyin",value="可以输入拼音和公司名称",required=false)
+			String comqNameOrComqPinyin){
     	try {
-    		Page<ProCompanyQua> page = companyQualificationService.getProCompanyQua(pageNum,pageSize);
+    		Page<ProCompanyQua> page = companyQualificationService.getProCompanyQua(pageNum,pageSize,comqNameOrComqPinyin);
     		if (page.size() > 0) {
     			return Result.success(page.toPageInfo());
     		} else {
@@ -205,6 +208,29 @@ public class CompanyQualificationController{
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
 	}
 	
+    /**
+     * 
+     * @Description: 删除公司资质
+     * @param comqId 公司资质id
+     * @return Result  
+     * @author liuhaihe
+     * @date 2019年6月20日
+     */
+    @ApiOperation(value="删除公司资质", notes="根据id删除公司资质")
+	@DeleteMapping("/delProCompanyQua")
+	public Result delProCompanyQua(String comqId){
+    	try {
+    		Integer it = companyQualificationService.del(comqId);
+    		if(it > 0){
+    			return Result.success();
+    		}else{
+    			return Result.failure(ResultCode.DATA_IS_WRONG);
+    		}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
 
 
 }

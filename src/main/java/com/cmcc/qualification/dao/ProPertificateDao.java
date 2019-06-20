@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.cmcc.qualification.entity.ProPertificate;
 
@@ -43,5 +44,12 @@ public interface ProPertificateDao {
 	 * @return
 	 */
 	Boolean delPersonalQuaInfo(String certificateId);
+
+	/**
+	 * 根据公司资质删除工资资质信息
+	 * @param comqId
+	 * @return
+	 */
+	Integer deleteByFkcertId(@Param(value="comqId") String comqId);
 
 }

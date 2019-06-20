@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,9 +83,16 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 	}
 
 	@Override
-	public Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize) {
+	public Page<ProCompanyQua> getProCompanyQua(Integer pageNum, Integer pageSize,String comqNameOrComqPinyin) {
 		PageHelper.startPage(pageNum, pageSize);
-		return proCompanyQuaDao.selectAllCompanyQuas();
+		return proCompanyQuaDao.selectAllCompanyQuas(comqNameOrComqPinyin);
+	}
+
+	@Override
+	@Transactional
+	public Integer del(String comqId) {
+		proPertificateDao.deleteByFkcertId(comqId);
+		return proCompanyQuaDao.deleteByPrimaryKey(comqId);
 	}
 
 	
