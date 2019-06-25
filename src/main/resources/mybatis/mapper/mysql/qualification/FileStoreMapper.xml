@@ -22,15 +22,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pub_store_file
+    from file_store
     where file_id = #{fileId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from pub_store_file
+    delete from file_store
     where file_id = #{fileId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.cmcc.qualification.entity.FileStore">
-    insert into pub_store_file (file_id, to_id, file_type, 
+    insert into file_store (file_id, to_id, file_type, 
       file_name, file_old_name, file_url, 
       file_addr, file_size, file_suffix, 
       status, del_flag, send_time
@@ -42,7 +42,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.cmcc.qualification.entity.FileStore">
-    insert into pub_store_file
+    insert into file_store
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="fileId != null">
         file_id,
@@ -121,7 +121,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.qualification.entity.FileStore">
-    update pub_store_file
+    update file_store
     <set>
       <if test="toId != null">
         to_id = #{toId,jdbcType=VARCHAR},
@@ -160,7 +160,7 @@
     where file_id = #{fileId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cmcc.qualification.entity.FileStore">
-    update pub_store_file
+    update file_store
     set to_id = #{toId,jdbcType=VARCHAR},
       file_type = #{fileType,jdbcType=VARCHAR},
       file_name = #{fileName,jdbcType=VARCHAR},
@@ -176,7 +176,7 @@
   </update>
   
   <insert id="insertObj" parameterType="java.util.List" >
-    insert into pub_store_file(
+    insert into file_store(
        file_id,
        to_id,
        file_type,
