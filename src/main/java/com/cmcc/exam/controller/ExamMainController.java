@@ -51,7 +51,7 @@ public class ExamMainController {
             @ApiParam(name = "typeId", value = "知识类型ID", required = false)
             @RequestParam(value = "typeId", required = false)
                     String typeId,
-            @ApiParam(name = "status", value = "状态（是否参与）", required = false)
+            @ApiParam(name = "status", value = "状态（是否参与：0否 1是）",allowableValues = "0, 1", required = false)
             @RequestParam(value = "status", required = false)
                     String status) {
         try {
