@@ -1,9 +1,8 @@
 package com.cmcc.know.dao;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.cmcc.know.entity.Knowledge;
 import com.github.pagehelper.Page;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 

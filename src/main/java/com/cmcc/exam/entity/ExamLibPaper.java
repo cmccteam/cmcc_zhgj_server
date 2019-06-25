@@ -1,10 +1,12 @@
 package com.cmcc.exam.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class ExamLibPaper {
     private String id;
-
+    @JsonIgnore
     private String libId;
-
+    @JsonIgnore
     private String paperId;
 
     private String libType;
@@ -18,9 +20,11 @@ public class ExamLibPaper {
     private String libContentThree;
 
     private String libContentFour;
-
+    @JsonIgnore
     private String libOk;
-
+    @JsonIgnore
+    private Integer score;
+    @JsonIgnore
     private Integer sort;
 
     public String getId() {
@@ -101,6 +105,14 @@ public class ExamLibPaper {
 
     public void setLibOk(String libOk) {
         this.libOk = libOk == null ? null : libOk.trim();
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public Integer getSort() {

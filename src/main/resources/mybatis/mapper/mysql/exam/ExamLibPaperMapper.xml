@@ -32,11 +32,11 @@
     insert into da_exam_lib_paper (id, lib_id, paper_id, 
       lib_type, lib_title, lib_content_one, 
       lib_content_two, lib_content_three, lib_content_four, 
-      lib_ok, sort)
+      lib_ok, sort, score)
     values (#{id,jdbcType=VARCHAR}, #{libId,jdbcType=VARCHAR}, #{paperId,jdbcType=VARCHAR}, 
       #{libType,jdbcType=VARCHAR}, #{libTitle,jdbcType=VARCHAR}, #{libContentOne,jdbcType=VARCHAR}, 
       #{libContentTwo,jdbcType=VARCHAR}, #{libContentThree,jdbcType=VARCHAR}, #{libContentFour,jdbcType=VARCHAR}, 
-      #{libOk,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER})
+      #{libOk,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{score,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.cmcc.exam.entity.ExamLibPaper">
     insert into da_exam_lib_paper

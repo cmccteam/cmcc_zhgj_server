@@ -1,11 +1,11 @@
 package com.cmcc.exam.dao;
 
-import java.util.List;
-
+import com.cmcc.exam.entity.ExamLib;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.cmcc.exam.entity.ExamLib;
+import java.util.List;
+
 @Mapper
 public interface ExamLibDao {
     int deleteByPrimaryKey(String libId);
@@ -19,13 +19,12 @@ public interface ExamLibDao {
     int updateByPrimaryKeySelective(ExamLib record);
 
     int updateByPrimaryKey(ExamLib record);
-    
+
     /**
-     * 
+     * @return List<ExamLib>
      * @Description: TODO 随机生成题目从题库中
-     * @return List<ExamLib>  
      * @author zengzhibin
      * @date 2019年3月1日
      */
-	List<ExamLib> selectPaperLib(@Param("rows") Integer rows);
+    List<ExamLib> selectPaperLib(@Param("rows") Integer rows, @Param("typeId") String typeId);
 }

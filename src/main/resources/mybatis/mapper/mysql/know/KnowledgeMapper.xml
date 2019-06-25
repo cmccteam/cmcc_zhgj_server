@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cmcc.know.dao.KnowledgeDao">
-  <resultMap id="BaseResultMap" type="com.cmcc.know.entity.Knowledge">
-    <id column="hnow_id" jdbcType="VARCHAR" property="hnowId" />
-    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
-    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
-    <result column="dictionary_id" jdbcType="VARCHAR" property="dictionaryId" />
-    <result column="dictionary_value" jdbcType="VARCHAR" property="dictionaryValue" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
-    <result column="attachment" jdbcType="VARCHAR" property="attachment" />
-    <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="brief" jdbcType="VARCHAR" property="brief" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
-  </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmcc.know.entity.Knowledge">
-    <result column="content" jdbcType="LONGVARCHAR" property="content" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.cmcc.know.entity.Knowledge">
+        <id column="hnow_id" jdbcType="VARCHAR" property="hnowId"/>
+        <result column="type_id" jdbcType="VARCHAR" property="typeId"/>
+        <result column="type_name" jdbcType="VARCHAR" property="typeName"/>
+        <result column="dictionary_id" jdbcType="VARCHAR" property="dictionaryId"/>
+        <result column="dictionary_value" jdbcType="VARCHAR" property="dictionaryValue"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="send_time" jdbcType="TIMESTAMP" property="sendTime"/>
+        <result column="attachment" jdbcType="VARCHAR" property="attachment"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="brief" jdbcType="VARCHAR" property="brief"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.cmcc.know.entity.Knowledge">
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     hnow_id, type_id, type_name, dictionary_id, dictionary_value, create_time, send_time, 
     attachment, title, brief, status, del_flag
   </sql>
-  <sql id="Blob_Column_List">
+    <sql id="Blob_Column_List">
     content
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from da_knowledge
-    where hnow_id = #{hnowId,jdbcType=VARCHAR}
-  </select>
-  
-  <select id="selectPage" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from da_knowledge
-    <where>
-    	<if test="selectField != null">
-     		AND ( 
-	         type_name like CONCAT('%',#{selectField},'%')  or 
-	         dictionary_value like CONCAT('%',#{selectField},'%') or 
-	         title like CONCAT('%',#{selectField},'%') 
-	         )
-	    </if>     
-    	<if test="typeId != null">
-	        AND type_id = #{typeId,jdbcType=VARCHAR}
-	      </if>
-	      <if test="typeName != null">
-	        AND type_name = #{typeName,jdbcType=VARCHAR}
-	      </if>
-	      <if test="dictionaryId != null">
-	       AND  dictionary_id = #{dictionaryId,jdbcType=VARCHAR}
-	      </if>
-	      <if test="dictionaryValue != null">
-	        AND dictionary_value = #{dictionaryValue,jdbcType=VARCHAR}
-	      </if>
-	      <if test="createTime != null">
-	        AND create_time = #{createTime,jdbcType=TIMESTAMP}
-	      </if>
-	      <if test="sendTime != null">
-	       AND  send_time = #{sendTime,jdbcType=TIMESTAMP}
-	      </if>
-	      <if test="attachment != null">
-	        AND attachment = #{attachment,jdbcType=VARCHAR}
-	      </if>
-	      <if test="title != null">
-	        AND title = #{title,jdbcType=VARCHAR}
-	      </if>
-	      <if test="brief != null">
-	        AND brief = #{brief,jdbcType=VARCHAR}
-	      </if>
-	      <if test="status != null">
-	        AND status = #{status,jdbcType=VARCHAR}
-	      </if>
-	      <if test="delFlag != null">
-	        AND del_flag = #{delFlag,jdbcType=VARCHAR}
-	      </if>
-	      <if test="content != null">
-	        AND content = #{content,jdbcType=LONGVARCHAR}
-	      </if>
-    </where>
-  </select>
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from da_knowledge
+        where hnow_id = #{hnowId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPage" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from da_knowledge
+        <where>
+            <if test="selectField != null">
+                AND (
+                type_name like CONCAT('%',#{selectField},'%') or
+                dictionary_value like CONCAT('%',#{selectField},'%') or
+                title like CONCAT('%',#{selectField},'%')
+                )
+            </if>
+            <if test="typeId != null">
+                AND type_id = #{typeId,jdbcType=VARCHAR}
+            </if>
+            <if test="typeName != null">
+                AND type_name = #{typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="dictionaryId != null">
+                AND dictionary_id = #{dictionaryId,jdbcType=VARCHAR}
+            </if>
+            <if test="dictionaryValue != null">
+                AND dictionary_value = #{dictionaryValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="sendTime != null">
+                AND send_time = #{sendTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="attachment != null">
+                AND attachment = #{attachment,jdbcType=VARCHAR}
+            </if>
+            <if test="title != null">
+                AND title = #{title,jdbcType=VARCHAR}
+            </if>
+            <if test="brief != null">
+                AND brief = #{brief,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="delFlag != null">
+                AND del_flag = #{delFlag,jdbcType=VARCHAR}
+            </if>
+            <if test="content != null">
+                AND content = #{content,jdbcType=LONGVARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from da_knowledge
     where hnow_id = #{hnowId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.cmcc.know.entity.Knowledge">
+    <insert id="insert" parameterType="com.cmcc.know.entity.Knowledge">
     insert into da_knowledge (hnow_id, type_id, type_name, 
       dictionary_id, dictionary_value, create_time, 
       send_time, attachment, title, 
@@ -103,134 +103,134 @@
       #{brief,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{delFlag,jdbcType=VARCHAR}, 
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.cmcc.know.entity.Knowledge">
-    insert into da_knowledge
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="hnowId != null">
-        hnow_id,
-      </if>
-      <if test="typeId != null">
-        type_id,
-      </if>
-      <if test="typeName != null">
-        type_name,
-      </if>
-      <if test="dictionaryId != null">
-        dictionary_id,
-      </if>
-      <if test="dictionaryValue != null">
-        dictionary_value,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="sendTime != null">
-        send_time,
-      </if>
-      <if test="attachment != null">
-        attachment,
-      </if>
-      <if test="title != null">
-        title,
-      </if>
-      <if test="brief != null">
-        brief,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="delFlag != null">
-        del_flag,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="hnowId != null">
-        #{hnowId,jdbcType=VARCHAR},
-      </if>
-      <if test="typeId != null">
-        #{typeId,jdbcType=VARCHAR},
-      </if>
-      <if test="typeName != null">
-        #{typeName,jdbcType=VARCHAR},
-      </if>
-      <if test="dictionaryId != null">
-        #{dictionaryId,jdbcType=VARCHAR},
-      </if>
-      <if test="dictionaryValue != null">
-        #{dictionaryValue,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sendTime != null">
-        #{sendTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="attachment != null">
-        #{attachment,jdbcType=VARCHAR},
-      </if>
-      <if test="title != null">
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="brief != null">
-        #{brief,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        #{delFlag,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.know.entity.Knowledge">
-    update da_knowledge
-    <set>
-      <if test="typeId != null">
-        type_id = #{typeId,jdbcType=VARCHAR},
-      </if>
-      <if test="typeName != null">
-        type_name = #{typeName,jdbcType=VARCHAR},
-      </if>
-      <if test="dictionaryId != null">
-        dictionary_id = #{dictionaryId,jdbcType=VARCHAR},
-      </if>
-      <if test="dictionaryValue != null">
-        dictionary_value = #{dictionaryValue,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sendTime != null">
-        send_time = #{sendTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="attachment != null">
-        attachment = #{attachment,jdbcType=VARCHAR},
-      </if>
-      <if test="title != null">
-        title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="brief != null">
-        brief = #{brief,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        del_flag = #{delFlag,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        content = #{content,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where hnow_id = #{hnowId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmcc.know.entity.Knowledge">
+    <insert id="insertSelective" parameterType="com.cmcc.know.entity.Knowledge">
+        insert into da_knowledge
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hnowId != null">
+                hnow_id,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="typeName != null">
+                type_name,
+            </if>
+            <if test="dictionaryId != null">
+                dictionary_id,
+            </if>
+            <if test="dictionaryValue != null">
+                dictionary_value,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="sendTime != null">
+                send_time,
+            </if>
+            <if test="attachment != null">
+                attachment,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="brief != null">
+                brief,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hnowId != null">
+                #{hnowId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="dictionaryId != null">
+                #{dictionaryId,jdbcType=VARCHAR},
+            </if>
+            <if test="dictionaryValue != null">
+                #{dictionaryValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendTime != null">
+                #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="attachment != null">
+                #{attachment,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="brief != null">
+                #{brief,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.know.entity.Knowledge">
+        update da_knowledge
+        <set>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="dictionaryId != null">
+                dictionary_id = #{dictionaryId,jdbcType=VARCHAR},
+            </if>
+            <if test="dictionaryValue != null">
+                dictionary_value = #{dictionaryValue,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sendTime != null">
+                send_time = #{sendTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="attachment != null">
+                attachment = #{attachment,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="brief != null">
+                brief = #{brief,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where hnow_id = #{hnowId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.cmcc.know.entity.Knowledge">
     update da_knowledge
     set type_id = #{typeId,jdbcType=VARCHAR},
       type_name = #{typeName,jdbcType=VARCHAR},
@@ -246,7 +246,7 @@
       content = #{content,jdbcType=LONGVARCHAR}
     where hnow_id = #{hnowId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cmcc.know.entity.Knowledge">
+    <update id="updateByPrimaryKey" parameterType="com.cmcc.know.entity.Knowledge">
     update da_knowledge
     set type_id = #{typeId,jdbcType=VARCHAR},
       type_name = #{typeName,jdbcType=VARCHAR},
