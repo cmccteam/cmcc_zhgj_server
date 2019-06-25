@@ -118,7 +118,7 @@
       f.file_id as fileId, 
       f.file_url as fileUrl 
     from pro_certificate p 
-         left join pub_store_file f on p.certificate_id=f.to_id 
+         left join file_store f on p.certificate_id=f.to_id 
     where p.certificate_id = #{certificateId}
   </select>
   

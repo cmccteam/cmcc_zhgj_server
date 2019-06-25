@@ -201,7 +201,7 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 		String certificateId = IdGenerateUtil.uuid3();
 		proPertificate.setCertificateId(certificateId);
 		proPertificate.setFkcertId(userId);
-		List<FileStore> listFileStore = new ArrayList<FileStore>();
+		List<FileStore> listFileStore = new ArrayList<>();
 		if (proPertificate.getFileUrl() != null) {
 			String[] urls = proPertificate.getFileUrl().split("#");
 			for (String url :urls) {
@@ -217,7 +217,7 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 		}
 		Integer f = proPertificateDao.addProPertificate(proPertificate);
 		Boolean flag = false;
-		if (listFileStore != null && !listFileStore.isEmpty()) {
+		if (listFileStore.size() > 0 && !listFileStore.isEmpty()) {
 			flag = fileStoreDao.insertObj(listFileStore);
 		}
 		log.info("批量更新图片是否成功："+flag);
