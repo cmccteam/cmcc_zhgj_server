@@ -5,9 +5,13 @@ import com.cmcc.common.bean.ResultCode;
 import com.cmcc.common.service.UserService;
 import com.cmcc.common.utils.ExcelUtil;
 import com.cmcc.common.utils.IdGenerateUtil;
+import com.cmcc.common.utils.MathUtil;
 import com.cmcc.exam.bean.ExamLibImportBean;
 import com.cmcc.exam.dao.*;
 import com.cmcc.exam.entity.*;
+import com.cmcc.exam.request.SubmitPaperRequest;
+import com.cmcc.exam.request.SubmitPaperResultRequest;
+import com.cmcc.exam.response.ExamPaperPageResponse;
 import com.cmcc.exam.service.ExamMainService;
 import com.cmcc.know.dao.KnowTypeDao;
 import com.cmcc.know.entity.KnowType;
@@ -82,9 +86,9 @@ public class ExamMainServiceImpl implements ExamMainService {
     }
 
     @Override
-    public Page<Map<String, Object>> getMyExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId) {
+    public Page<ExamPaperPageResponse> getMyExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId, String typeId, String status) {
         PageHelper.startPage(pageNum, pageSize, orderBy);
-        return examPaperDao.selectMyPage(title, userId);
+        return examPaperDao.selectMyPage(title, userId, typeId, status);
     }
 
     @Transactional
@@ -96,16 +100,19 @@ public class ExamMainServiceImpl implements ExamMainService {
         examPaper.setTotal(examPaper.getUserId().length);
         if (StringUtils.equals(examPaper.getStatus(), "0")) {//发布试卷
             examPaper.setSendTime(new Date());
-            this.updateLibPaper(examPaper.getPaperId(), examPaper.getRows());//生成题目
-            for (String userId : examPaper.getUserId()) {//保存考试人员
-                ExamUser examUser = new ExamUser();
-                examUser.setId(IdGenerateUtil.uuid3());
-                examUser.setPaperId(examPaper.getPaperId());
-                examUser.setUserId(userId);
-                examUser.setUserName(userSerivce.getUserName(userId));
-                examUser.setLibSort(0);
-                examUserDao.insertSelective(examUser);
-            }
+        }
+        this.updateLibPaper(examPaper.getPaperId(), examPaper.getRows(), examPaper.getTypeId());//生成题目
+        for (String userId : examPaper.getUserId()) {//保存考试人员
+            ExamUser examUser = new ExamUser();
+            examUser.setId(IdGenerateUtil.uuid3());
+            examUser.setPaperId(examPaper.getPaperId());
+            examUser.setUserId(userId);
+            examUser.setUserName(userSerivce.getUserName(userId));
+            examUser.setScore(0);
+            examUser.setIntegral(0);
+            examUser.setStatus(String.valueOf(0));
+            examUser.setLibSort(0);
+            examUserDao.insertSelective(examUser);
         }
         examPaperDao.insertSelective(examPaper);//保存试卷
         return 1;
@@ -123,7 +130,7 @@ public class ExamMainServiceImpl implements ExamMainService {
             examPaper.setTotal(examPaper.getUserId().length);
             if (StringUtils.equals(examPaper.getStatus(), "0")) {//发布试卷
                 examPaper.setSendTime(new Date());
-                this.updateLibPaper(examPaper.getPaperId(), examPaper.getRows());//生成题目
+                this.updateLibPaper(examPaper.getPaperId(), examPaper.getRows(), examPaper.getTypeId());//生成题目
                 for (String userId : examPaper.getUserId()) {//保存考试人员
                     ExamUser examUser = new ExamUser();
                     examUser.setId(IdGenerateUtil.uuid3());
@@ -152,10 +159,9 @@ public class ExamMainServiceImpl implements ExamMainService {
     }
 
     @Transactional
-    @Override
-    public boolean updateLibPaper(String paperId, Integer rows) {
+    public boolean updateLibPaper(String paperId, Integer rows, String typeId) {
         //生成试卷题库从题库中
-        List<ExamLib> libs = examLibDao.selectPaperLib(rows);
+        List<ExamLib> libs = examLibDao.selectPaperLib(rows, typeId);
         for (int i = 0; i < libs.size(); i++) {
             ExamLib examLib = libs.get(i);
             ExamLibPaper examLibPaper = new ExamLibPaper();
@@ -170,6 +176,7 @@ public class ExamMainServiceImpl implements ExamMainService {
             examLibPaper.setLibType(examLib.getLibType());
             examLibPaper.setLibOk(examLib.getLibOk());
             examLibPaper.setSort(i + 1);
+            examLibPaper.setSort(examLib.getScore());
             examLibPaperDao.insert(examLibPaper);
         }
         return true;
@@ -303,7 +310,14 @@ public class ExamMainServiceImpl implements ExamMainService {
     }
 
     @Override
-    public Result importLib(MultipartFile file) {
+    public Result importLib(String typeId, MultipartFile file) {
+        if (StringUtils.isBlank(typeId)) {
+            return Result.failure(ResultCode.PARAM_IS_INVALID);
+        }
+        KnowType knowType = knowTypeDao.selectByPrimaryKey(typeId);
+        if (knowType == null) {
+            return Result.failure(ResultCode.PARAM_IS_INVALID);
+        }
         //验证文件格式
         String filename = file.getOriginalFilename();
         if (!filename.matches("^.+\\.(?i)(xls)$") && !filename.matches("^.+\\.(?i)(xlsx)$")) {
@@ -326,10 +340,8 @@ public class ExamMainServiceImpl implements ExamMainService {
                 el.setLibId(IdGenerateUtil.uuid3());
                 el.setCreateName(userSerivce.getUserId());
                 el.setCreateTime(new Date());
-                String typeName = map.get("typeName").toString();
-                KnowType kt = knowTypeDao.selectByTypeName(typeName);
-                el.setTypeId(kt.getTypeId());
-                el.setTypeName(kt.getTypeName());
+                el.setTypeId(knowType.getTypeId());
+                el.setTypeName(knowType.getTypeName());
                 el.setLibType(map.get("libType").toString());
                 el.setLibTitle(map.get("libTitle").toString());
                 el.setLibContentOne(map.get("libContentOne").toString());
@@ -353,5 +365,54 @@ public class ExamMainServiceImpl implements ExamMainService {
         return Result.success(resList);
     }
 
+    @Override
+    public Result libPaper(String userId, String paperId) {
+        if (StringUtils.isBlank(userId)) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(paperId)) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        return Result.success(examUserDao.libPaper(userId, paperId));
+    }
 
+    @Override
+    public Result submitPaper(SubmitPaperRequest submitPaperRequest) {
+        if (submitPaperRequest == null) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(submitPaperRequest.getUserId())) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(submitPaperRequest.getPaperId())) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (submitPaperRequest.getResults() == null || submitPaperRequest.getResults().isEmpty())
+            return Result.failure(ResultCode.PARAM_IS_INVALID);
+        ExamUser examUser = examUserDao.selectByPaperId(submitPaperRequest.getUserId(), submitPaperRequest.getPaperId());
+        if (examUser == null) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isNotBlank(examUser.getStatus()) && examUser.getStatus().equals(1))
+            return Result.failure(ResultCode.PARAM_IS_INVALID);
+        List<ExamLibPaper> examLibPapers = examUserDao.libPaper(submitPaperRequest.getUserId(), submitPaperRequest.getPaperId());
+        if (examLibPapers == null || examLibPapers.isEmpty()) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        // 计算分数
+        Integer score = 0;
+        Integer totalScore = examUserDao.totalScore(submitPaperRequest.getUserId(), submitPaperRequest.getPaperId());
+        for (SubmitPaperResultRequest submitPaperResultRequest : submitPaperRequest.getResults()) {
+            for (ExamLibPaper examLibPaper : examLibPapers) {
+                if (submitPaperResultRequest.getLibPaperId().equals(examLibPaper.getId()) && submitPaperResultRequest.getLibResult().equals(examLibPaper.getLibOk())) {
+                    score += examLibPaper.getSort();
+                }
+            }
+        }
+        examUser.setScore(MathUtil.percentage(score, totalScore));
+        examUser.setStatus(String.valueOf(1));
+        examUser.setSendTime(new Date());
+        examUserDao.updateByPrimaryKey(examUser);
+        return Result.success(examUser.getScore());
+    }
+
+    @Override
+    public Result updatePaperStatus(String paperId, String status) {
+        if (StringUtils.isBlank(paperId)) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(status)) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        ExamPaper examPaper = examPaperDao.selectByPrimaryKey(paperId);
+        if (examPaper == null) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (status.equals("0")) {
+            examPaper.setSendTime(new Date());
+        }
+        examPaper.setStatus(status);
+        examPaperDao.updateByPrimaryKey(examPaper);
+        return Result.success();
+    }
 }

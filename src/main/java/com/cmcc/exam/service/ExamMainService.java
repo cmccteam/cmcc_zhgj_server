@@ -4,6 +4,8 @@ package com.cmcc.exam.service;
 import com.cmcc.common.bean.Result;
 import com.cmcc.exam.entity.ExamLibUser;
 import com.cmcc.exam.entity.ExamPaper;
+import com.cmcc.exam.request.SubmitPaperRequest;
+import com.cmcc.exam.response.ExamPaperPageResponse;
 import com.github.pagehelper.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +43,7 @@ public interface ExamMainService {
      * @author zengzhibin
      * @date 2019年2月27日
      */
-    public Page<Map<String, Object>> getMyExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId);
+    public Page<ExamPaperPageResponse> getMyExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId, String typeId, String status);
 
     /**
      * @param examPaper 试卷实体
@@ -86,7 +88,7 @@ public interface ExamMainService {
      * @author zengzhibin
      * @date 2019年3月1日
      */
-    public boolean updateLibPaper(String parperId, Integer rows);
+    public boolean updateLibPaper(String parperId, Integer rows, String typeId);
 
     /**
      * @param userId
@@ -99,11 +101,38 @@ public interface ExamMainService {
     public Map<String, Object> takePart(String userId, String paperId, Integer tmType, Integer index, ExamLibUser examLibUser);
 
     /**
+     * @param typeId 知识分类ID
      * @param file
      * @return Result
      * @Description: TODO 导入题目到库
      * @author zengzhibin
      * @date 2019年3月1日
      */
-    public Result importLib(MultipartFile file);
+    public Result importLib(String typeId, MultipartFile file);
+
+    /**
+     * 获取试卷题目
+     *
+     * @param userId  用户ID
+     * @param paperId 试卷ID
+     * @return
+     */
+    Result libPaper(String userId, String paperId);
+
+    /**
+     * 交卷
+     *
+     * @param submitPaperRequest 交卷请求参数
+     * @return
+     */
+    Result submitPaper(SubmitPaperRequest submitPaperRequest);
+
+    /**
+     * 更新试卷状态
+     *
+     * @param paperId
+     * @param status
+     * @return
+     */
+    Result updatePaperStatus(String paperId, String status);
 }

@@ -1,70 +1,80 @@
 package com.cmcc.exam.entity;
 
-import java.util.Date;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 /**
- * 
- * ClassName: ExamPaper 
- * @Description: TODO 试卷实体
+ * ClassName: ExamPaper
+ *
  * @author zengzhibin
+ * @Description: TODO 试卷实体
  * @date 2019年3月4日
  */
-@ApiModel(value="试卷实体",description="试卷实体")
+@ApiModel(value = "试卷实体", description = "试卷实体")
 public class ExamPaper {
-	
-	@ApiModelProperty(hidden=true)
+
+    @ApiModelProperty(hidden = true)
     private String paperId;
-	@ApiModelProperty(value="试卷名称",required=false)
+    @ApiModelProperty(value = "试卷名称", required = true)
     private String paperTitle;
-	@ApiModelProperty(value="试卷简介",required=false)
+    @ApiModelProperty(value = "试卷简介", required = true)
     private String paperBrief;
-    @ApiModelProperty(hidden=true)
+    @ApiModelProperty(hidden = true)
     private String createName;
-    @ApiModelProperty(hidden=true)
+    @ApiModelProperty(hidden = true)
     private Date createTime;
-    @ApiModelProperty(hidden=true)
+    @ApiModelProperty(hidden = true)
     private Date sendTime;
-    @ApiModelProperty(value="备注",required=false)
+    @ApiModelProperty(value = "备注")
     private String remark;
-    @ApiModelProperty(hidden=true)
+    @ApiModelProperty(hidden = true)
     private Integer total;
-    @ApiModelProperty(value="0已发布，1未发布，2已过期",required=false)
+    @ApiModelProperty(value = "0已发布，1未发布，2已过期", allowableValues = "0, 1, 2", required = true)
     private String status;
-    
-    @ApiModelProperty(value="考试用户",required=false)
+    @ApiModelProperty(value = "知识分类ID", required = true)
+    private String typeId;
+
+    @ApiModelProperty(value = "考试用户", required = true)
     private String[] userId;
-    @ApiModelProperty(value="考试题目数量",required=false)
+    @ApiModelProperty(value = "考试题目数量", required = true)
     private Integer rows;
-    
-    
+
+
     public Integer getRows() {
-		return rows;
-	}
+        return rows;
+    }
 
-	public void setRows(Integer rows) {
-		this.rows = rows;
-	}
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
 
-	public String[] getUserId() {
-		return userId;
-	}
+    public String[] getUserId() {
+        return userId;
+    }
 
-	public void setUserId(String[] userId) {
-		this.userId = userId;
-	}
+    public void setUserId(String[] userId) {
+        this.userId = userId;
+    }
 
-	public String getStatus() {
-		return status;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public String getPaperId() {
+    public String getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(String typeId) {
+        this.typeId = typeId;
+    }
+
+    public String getPaperId() {
         return paperId;
     }
 

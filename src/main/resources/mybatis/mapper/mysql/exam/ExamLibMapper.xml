@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cmcc.exam.dao.ExamLibDao">
-  <resultMap id="BaseResultMap" type="com.cmcc.exam.entity.ExamLib">
-    <id column="lib_id" jdbcType="VARCHAR" property="libId" />
-    <result column="type_id" jdbcType="VARCHAR" property="typeId" />
-    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
-    <result column="lib_type" jdbcType="VARCHAR" property="libType" />
-    <result column="lib_title" jdbcType="VARCHAR" property="libTitle" />
-    <result column="lib_content_one" jdbcType="VARCHAR" property="libContentOne" />
-    <result column="lib_content_two" jdbcType="VARCHAR" property="libContentTwo" />
-    <result column="lib_content_three" jdbcType="VARCHAR" property="libContentThree" />
-    <result column="lib_content_four" jdbcType="VARCHAR" property="libContentFour" />
-    <result column="lib_ok" jdbcType="VARCHAR" property="libOk" />
-    <result column="score" jdbcType="INTEGER" property="score" />
-    <result column="create_name" jdbcType="VARCHAR" property="createName" />
-    <result column="create_time" jdbcType="DATE" property="createTime" />
-    <result column="out_time" jdbcType="DATE" property="outTime" />
-    <result column="priority" jdbcType="INTEGER" property="priority" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.cmcc.exam.entity.ExamLib">
+        <id column="lib_id" jdbcType="VARCHAR" property="libId"/>
+        <result column="type_id" jdbcType="VARCHAR" property="typeId"/>
+        <result column="type_name" jdbcType="VARCHAR" property="typeName"/>
+        <result column="lib_type" jdbcType="VARCHAR" property="libType"/>
+        <result column="lib_title" jdbcType="VARCHAR" property="libTitle"/>
+        <result column="lib_content_one" jdbcType="VARCHAR" property="libContentOne"/>
+        <result column="lib_content_two" jdbcType="VARCHAR" property="libContentTwo"/>
+        <result column="lib_content_three" jdbcType="VARCHAR" property="libContentThree"/>
+        <result column="lib_content_four" jdbcType="VARCHAR" property="libContentFour"/>
+        <result column="lib_ok" jdbcType="VARCHAR" property="libOk"/>
+        <result column="score" jdbcType="INTEGER" property="score"/>
+        <result column="create_name" jdbcType="VARCHAR" property="createName"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+        <result column="out_time" jdbcType="DATE" property="outTime"/>
+        <result column="priority" jdbcType="INTEGER" property="priority"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     lib_id, type_id, type_name, lib_type, lib_title, lib_content_one, lib_content_two, 
     lib_content_three, lib_content_four, lib_ok, score, create_name, create_time, out_time, 
     priority, status, del_flag
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from da_exam_lib
-    where lib_id = #{libId,jdbcType=VARCHAR}
-  </select>
-  
-  <select id="selectPaperLib" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" />
-    from (select * from da_exam_lib WHERE `status`='0' AND del_flag='0' order by priority asc ) t order by rand()  LIMIT #{rows}
-  </select>
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from da_exam_lib
+        where lib_id = #{libId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPaperLib" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from (select * from da_exam_lib WHERE `status`='0' AND del_flag='0' AND type_id = #{typeId} order by priority
+        asc ) t order by rand() LIMIT #{rows}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from da_exam_lib
     where lib_id = #{libId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.cmcc.exam.entity.ExamLib">
+    <insert id="insert" parameterType="com.cmcc.exam.entity.ExamLib">
     insert into da_exam_lib (lib_id, type_id, type_name, 
       lib_type, lib_title, lib_content_one, 
       lib_content_two, lib_content_three, lib_content_four, 
@@ -55,170 +57,170 @@
       #{createTime,jdbcType=DATE}, #{outTime,jdbcType=DATE}, #{priority,jdbcType=INTEGER}, 
       #{status,jdbcType=VARCHAR}, #{delFlag,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.cmcc.exam.entity.ExamLib">
-    insert into da_exam_lib
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="libId != null">
-        lib_id,
-      </if>
-      <if test="typeId != null">
-        type_id,
-      </if>
-      <if test="typeName != null">
-        type_name,
-      </if>
-      <if test="libType != null">
-        lib_type,
-      </if>
-      <if test="libTitle != null">
-        lib_title,
-      </if>
-      <if test="libContentOne != null">
-        lib_content_one,
-      </if>
-      <if test="libContentTwo != null">
-        lib_content_two,
-      </if>
-      <if test="libContentThree != null">
-        lib_content_three,
-      </if>
-      <if test="libContentFour != null">
-        lib_content_four,
-      </if>
-      <if test="libOk != null">
-        lib_ok,
-      </if>
-      <if test="score != null">
-        score,
-      </if>
-      <if test="createName != null">
-        create_name,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="outTime != null">
-        out_time,
-      </if>
-      <if test="priority != null">
-        priority,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="delFlag != null">
-        del_flag,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="libId != null">
-        #{libId,jdbcType=VARCHAR},
-      </if>
-      <if test="typeId != null">
-        #{typeId,jdbcType=VARCHAR},
-      </if>
-      <if test="typeName != null">
-        #{typeName,jdbcType=VARCHAR},
-      </if>
-      <if test="libType != null">
-        #{libType,jdbcType=VARCHAR},
-      </if>
-      <if test="libTitle != null">
-        #{libTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentOne != null">
-        #{libContentOne,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentTwo != null">
-        #{libContentTwo,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentThree != null">
-        #{libContentThree,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentFour != null">
-        #{libContentFour,jdbcType=VARCHAR},
-      </if>
-      <if test="libOk != null">
-        #{libOk,jdbcType=VARCHAR},
-      </if>
-      <if test="score != null">
-        #{score,jdbcType=INTEGER},
-      </if>
-      <if test="createName != null">
-        #{createName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=DATE},
-      </if>
-      <if test="outTime != null">
-        #{outTime,jdbcType=DATE},
-      </if>
-      <if test="priority != null">
-        #{priority,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        #{delFlag,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.exam.entity.ExamLib">
-    update da_exam_lib
-    <set>
-      <if test="typeId != null">
-        type_id = #{typeId,jdbcType=VARCHAR},
-      </if>
-      <if test="typeName != null">
-        type_name = #{typeName,jdbcType=VARCHAR},
-      </if>
-      <if test="libType != null">
-        lib_type = #{libType,jdbcType=VARCHAR},
-      </if>
-      <if test="libTitle != null">
-        lib_title = #{libTitle,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentOne != null">
-        lib_content_one = #{libContentOne,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentTwo != null">
-        lib_content_two = #{libContentTwo,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentThree != null">
-        lib_content_three = #{libContentThree,jdbcType=VARCHAR},
-      </if>
-      <if test="libContentFour != null">
-        lib_content_four = #{libContentFour,jdbcType=VARCHAR},
-      </if>
-      <if test="libOk != null">
-        lib_ok = #{libOk,jdbcType=VARCHAR},
-      </if>
-      <if test="score != null">
-        score = #{score,jdbcType=INTEGER},
-      </if>
-      <if test="createName != null">
-        create_name = #{createName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=DATE},
-      </if>
-      <if test="outTime != null">
-        out_time = #{outTime,jdbcType=DATE},
-      </if>
-      <if test="priority != null">
-        priority = #{priority,jdbcType=INTEGER},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="delFlag != null">
-        del_flag = #{delFlag,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where lib_id = #{libId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.cmcc.exam.entity.ExamLib">
+    <insert id="insertSelective" parameterType="com.cmcc.exam.entity.ExamLib">
+        insert into da_exam_lib
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="libId != null">
+                lib_id,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="typeName != null">
+                type_name,
+            </if>
+            <if test="libType != null">
+                lib_type,
+            </if>
+            <if test="libTitle != null">
+                lib_title,
+            </if>
+            <if test="libContentOne != null">
+                lib_content_one,
+            </if>
+            <if test="libContentTwo != null">
+                lib_content_two,
+            </if>
+            <if test="libContentThree != null">
+                lib_content_three,
+            </if>
+            <if test="libContentFour != null">
+                lib_content_four,
+            </if>
+            <if test="libOk != null">
+                lib_ok,
+            </if>
+            <if test="score != null">
+                score,
+            </if>
+            <if test="createName != null">
+                create_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="outTime != null">
+                out_time,
+            </if>
+            <if test="priority != null">
+                priority,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="libId != null">
+                #{libId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="libType != null">
+                #{libType,jdbcType=VARCHAR},
+            </if>
+            <if test="libTitle != null">
+                #{libTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentOne != null">
+                #{libContentOne,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentTwo != null">
+                #{libContentTwo,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentThree != null">
+                #{libContentThree,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentFour != null">
+                #{libContentFour,jdbcType=VARCHAR},
+            </if>
+            <if test="libOk != null">
+                #{libOk,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                #{score,jdbcType=INTEGER},
+            </if>
+            <if test="createName != null">
+                #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="outTime != null">
+                #{outTime,jdbcType=DATE},
+            </if>
+            <if test="priority != null">
+                #{priority,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.exam.entity.ExamLib">
+        update da_exam_lib
+        <set>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=VARCHAR},
+            </if>
+            <if test="typeName != null">
+                type_name = #{typeName,jdbcType=VARCHAR},
+            </if>
+            <if test="libType != null">
+                lib_type = #{libType,jdbcType=VARCHAR},
+            </if>
+            <if test="libTitle != null">
+                lib_title = #{libTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentOne != null">
+                lib_content_one = #{libContentOne,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentTwo != null">
+                lib_content_two = #{libContentTwo,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentThree != null">
+                lib_content_three = #{libContentThree,jdbcType=VARCHAR},
+            </if>
+            <if test="libContentFour != null">
+                lib_content_four = #{libContentFour,jdbcType=VARCHAR},
+            </if>
+            <if test="libOk != null">
+                lib_ok = #{libOk,jdbcType=VARCHAR},
+            </if>
+            <if test="score != null">
+                score = #{score,jdbcType=INTEGER},
+            </if>
+            <if test="createName != null">
+                create_name = #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=DATE},
+            </if>
+            <if test="outTime != null">
+                out_time = #{outTime,jdbcType=DATE},
+            </if>
+            <if test="priority != null">
+                priority = #{priority,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where lib_id = #{libId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.cmcc.exam.entity.ExamLib">
     update da_exam_lib
     set type_id = #{typeId,jdbcType=VARCHAR},
       type_name = #{typeName,jdbcType=VARCHAR},

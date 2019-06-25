@@ -16,12 +16,12 @@
     id, paper_id, user_id, user_name, score, integral, send_time, status, lib_sort
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from da_exam_user
     where id = #{id,jdbcType=VARCHAR}
   </select>
-  
+
   <!-- 考试积分排行榜 -->
   <select id="selectIntRank" parameterType="java.lang.Integer" resultType="map">
     select 
@@ -32,21 +32,21 @@
   </select>
   <!-- 获取用户某试卷相关信息-->
   <select id="selectByPaperId" parameterType="java.lang.String" resultMap="BaseResultMap">
-   	select 
+   	select
     <include refid="Base_Column_List" />
-    from da_exam_user 
+    from da_exam_user
     WHERE user_id=#{userId,jdbcType=VARCHAR} AND paper_id=#{paperId,jdbcType=VARCHAR} LIMIT 1
   </select>
- 
+
   <!-- 获取user考试的所有题目 -->
   <select id="selectMyPaperLibAll" parameterType="java.lang.String" resultType="map">
-    SELECT eu.id eu_id,eu.user_id,eu.user_name,lp.* FROM da_exam_user eu 
+    SELECT eu.id eu_id,eu.user_id,eu.user_name,lp.* FROM da_exam_user eu
 	LEFT JOIN da_exam_lib_paper lp ON eu.paper_id=lp.paper_id
 	WHERE eu.user_id=#{userId,jdbcType=VARCHAR} AND eu.paper_id=#{paperId,jdbcType=VARCHAR} 
 	ORDER BY sort asc
   </select>
-  
-  
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from da_exam_user
     where id = #{id,jdbcType=VARCHAR}
@@ -164,7 +164,7 @@
       lib_sort = #{libSort,jdbcType=INTEGER}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  
+
   <update id="updateIndexByPaperId" parameterType="com.cmcc.exam.entity.ExamUser">
     update da_exam_user
     <set>
@@ -186,5 +186,35 @@
     </set>
     where user_id = #{userId,jdbcType=VARCHAR} AND paper_id = #{paperId,jdbcType=VARCHAR}
   </update>
-  
+
+    <select id="libPaper" parameterType="java.lang.String"
+            resultType="com.cmcc.exam.entity.ExamLibPaper">
+        SELECT
+        lp.id,
+        lp.lib_id libId,
+        lp.paper_id paperId,
+        lp.lib_type libType,
+        lp.lib_title libTitle,
+        lp.lib_content_one libContentOne,
+        lp.lib_content_two libContentTwo,
+        lp.lib_content_three libContentThree,
+        lp.lib_content_four libContentFour,
+        lp.lib_ok libOk,
+        lp.sort,
+        lp.score
+        FROM da_exam_user eu
+        LEFT JOIN da_exam_lib_paper lp ON eu.paper_id=lp.paper_id
+        WHERE eu.user_id=#{userId,jdbcType=VARCHAR} AND eu.paper_id=#{paperId,jdbcType=VARCHAR}
+        ORDER BY sort asc
+    </select>
+
+  <select id="totalScore" parameterType="java.lang.String"
+          resultType="java.lang.Integer">
+    SELECT
+    sum(lp.score) AS totalScore
+    FROM da_exam_user eu
+    LEFT JOIN da_exam_lib_paper lp ON eu.paper_id=lp.paper_id
+    WHERE eu.user_id=#{userId,jdbcType=VARCHAR} AND eu.paper_id=#{paperId,jdbcType=VARCHAR}
+    GROUP BY eu.paper_id
+  </select>
 </mapper>

@@ -1,11 +1,10 @@
 package com.cmcc.exam.dao;
 
 import com.cmcc.exam.entity.ExamPaper;
+import com.cmcc.exam.response.ExamPaperPageResponse;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import java.util.Map;
 
 @Mapper
 public interface ExamPaperDao {
@@ -37,7 +36,7 @@ public interface ExamPaperDao {
      * @author zengzhibin
      * @date 2019年3月1日
      */
-    Page<Map<String, Object>> selectMyPage(@Param("paperTitle") String paperTitle, @Param("userId") String userId);
+    Page<ExamPaperPageResponse> selectMyPage(@Param("paperTitle") String paperTitle, @Param("userId") String userId, @Param("typeId") String typeId, @Param("status") String status);
 
     /**
      * @param paperId

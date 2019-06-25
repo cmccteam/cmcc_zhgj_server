@@ -11,6 +11,7 @@
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="total" jdbcType="INTEGER" property="total"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="type_id" jdbcType="VARCHAR" property="typeId"/>
     </resultMap>
     <sql id="Base_Column_List">
     paper_id, paper_title, paper_brief, create_name, create_time, send_time, remark, 
@@ -36,24 +37,22 @@
                 AND ep.paper_title like CONCAT('%',#{paperTitle},'%')
             </if>
             <if test="userId != null">
-                eu.user_id=#{userId}
+                AND eu.user_id=#{userId}
             </if>
         </where>
     </select>
 
     <!-- 分页查询所有考试列表-->
-    <select id="selectMyPage" parameterType="java.lang.String" resultType="map">
+    <select id="selectMyPage" parameterType="java.lang.String" resultType="com.cmcc.exam.response.ExamPaperPageResponse">
         select
         ep.paper_id paperId,
         ep.paper_title paperTitle,
         ep.paper_brief paperBrief,
-        ep.create_name createName,
-        ep.create_time createTime,
-        ep.send_time sendTime,
         ep.remark,
         ep.total,
-        ep.status,
-        eu.status isEnd
+        eu.status,
+        eu.send_time sendTime,
+        eu.score
         from da_exam_paper ep
         LEFT JOIN da_exam_user eu on eu.paper_id=ep.paper_id
         where ep.status = '0'
@@ -61,7 +60,13 @@
             AND ep.paper_title like CONCAT('%',#{paperTitle},'%')
         </if>
         <if test="userId != null">
-            eu.user_id=#{userId}
+            AND eu.user_id=#{userId}
+        </if>
+        <if test="typeId != null">
+            AND ep.type_id=#{typeId}
+        </if>
+        <if test="status != null">
+            AND eu.status = #{status}
         </if>
     </select>
 
@@ -122,6 +127,9 @@
             <if test="status != null">
                 status,
             </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="paperId != null">
@@ -151,6 +159,9 @@
             <if test="status != null">
                 #{status,jdbcType=VARCHAR},
             </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.cmcc.exam.entity.ExamPaper">
@@ -179,6 +190,9 @@
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                status = #{typeId,jdbcType=VARCHAR},
             </if>
         </set>
         where paper_id = #{paperId,jdbcType=VARCHAR}
