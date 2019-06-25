@@ -5,9 +5,13 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cmcc.common.bean.BaseUser;
+import com.cmcc.common.bean.SysUser;
+import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.vo.SysUserVo;
 import com.cmcc.qualification.vo.UserInfoVo;
+import com.github.pagehelper.Page;
 
 
 /**
@@ -76,5 +80,23 @@ public interface PersonalQualificationService {
 	 * @return
 	 */
 	Boolean delPersonalQualificationInfo(String certificateId);
+
+	/**
+	 * 分页获取个人信息
+	 * @param pageNum
+	 * @param pageSize
+	 * @param orderBy
+	 * @param companyId
+	 * @param baseUser
+	 * @return
+	 */
+	Page<SysUser> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId,
+			BaseUser baseUser);
+
+	Integer addCpUser(ProCompanyUser proCompanyUser);
+
+	Integer updateCpUser(ProCompanyUser proCompanyUser);
+
+	Integer delCpUser(String comqId, String userId);
 
 }

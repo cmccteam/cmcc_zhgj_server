@@ -21,19 +21,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cmcc.common.bean.BaseUser;
+import com.cmcc.common.service.SystemService;
 import com.cmcc.common.utils.IdGenerateUtil;
 import com.cmcc.common.utils.Sort;
 import com.cmcc.qualification.dao.FileStoreDao;
+import com.cmcc.qualification.dao.ProCompanyUserDao;
 import com.cmcc.qualification.dao.ProPertificateDao;
 import com.cmcc.qualification.dao.ProProjectUserDao;
 import com.cmcc.qualification.dao.SysUserDao;
 import com.cmcc.qualification.entity.FileStore;
+import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.entity.ProProjectUser;
 import com.cmcc.qualification.entity.SysUser;
 import com.cmcc.qualification.service.PersonalQualificationService;
 import com.cmcc.qualification.vo.SysUserVo;
 import com.cmcc.qualification.vo.UserInfoVo;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 
 /**
  * 资质信息业务层实现类
@@ -54,6 +60,12 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 	
 	@Autowired
 	private FileStoreDao fileStoreDao;
+	
+	@Autowired
+	private ProCompanyUserDao proCompanyUserDao;
+	
+	@Autowired
+	private SystemService systemService;
 	
 	private Logger log =  LoggerFactory.getLogger(this.getClass());
 	
@@ -234,5 +246,40 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 		return proPertificateDao.delPersonalQuaInfo(certificateId);
 	}
 
+	@Override
+	public Page<com.cmcc.common.bean.SysUser> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId,
+			BaseUser baseUser) {
+		PageHelper.startPage(pageNum,pageSize,orderBy);
+		Page<ProCompanyUser> page = proCompanyUserDao.selectPage(companyId);
+		List<ProCompanyUser> list = page.getResult();
+		List<com.cmcc.common.bean.SysUser> users = systemService.getZhgjUsers(baseUser);
+		Page<com.cmcc.common.bean.SysUser> nowPage = new Page<com.cmcc.common.bean.SysUser>();
+		for (ProCompanyUser pc : list) {
+			for (com.cmcc.common.bean.SysUser user : users) {
+				if(pc.getUserId().equals(user.getUserId())){
+					nowPage.add(user);
+				}
+			}
+		}
+		nowPage.setTotal(page.getTotal());
+		nowPage.setPageNum(page.getPageNum());
+		nowPage.setPageSize(page.getPageSize());
+		nowPage.setPages(page.getPages());
+		return nowPage;
+	}
+	@Override
+	public Integer addCpUser(ProCompanyUser proCompanyUser){
+		proCompanyUser.setCpUserId(IdGenerateUtil.uuid3());
+		return proCompanyUserDao.insertSelective(proCompanyUser);
+	}
 
+	@Override
+	public Integer updateCpUser(ProCompanyUser proCompanyUser){
+		return proCompanyUserDao.updateData(proCompanyUser);
+	}
+
+	@Override
+	public Integer delCpUser(String comqId,String userId){
+		return proCompanyUserDao.deleteData(comqId,userId);
+	}
 }

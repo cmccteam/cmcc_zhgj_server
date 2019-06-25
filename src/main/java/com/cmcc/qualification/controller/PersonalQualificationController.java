@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,12 +19,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
+import com.cmcc.config.interceptor.CurrentUser;
+import com.cmcc.know.entity.Knowledge;
+import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.service.PersonalQualificationService;
 import com.cmcc.qualification.vo.SysUserVo;
 import com.cmcc.qualification.vo.UserInfoVo;
+import com.github.pagehelper.Page;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,6 +53,95 @@ public class PersonalQualificationController{
 	
     private static Logger LOGGER = LoggerFactory.getLogger(PersonalQualificationController.class);
 	
+    
+    @ApiOperation(value="分页获取个人信息", notes="分页获取个人信息")
+	@GetMapping(value = "/getPage")
+	public Result getPage(
+			@ApiParam(name="pageNum",value="页码，从1开始，默认为1",required=true)
+			@RequestParam(value="pageNum",defaultValue="1")
+			Integer pageNum,
+			@ApiParam(name="pageSize",value="每页大小，默认为10",required=true)
+			@RequestParam(value="pageSize",defaultValue="10")
+			Integer pageSize,
+			@ApiParam(name="orderBy",value="排序字段 ，‘order desc’",required=false)
+			@RequestParam(value="orderBy",required=false)
+			String orderBy,
+			@ApiParam(name="companyId",value="公司ID",required=false)
+			@RequestParam(value="companyId",required=false)
+			String companyId,@CurrentUser BaseUser baseUser){
+		try {
+			Page<com.cmcc.common.bean.SysUser> page = personalQualificationService.getPage(pageNum, pageSize, orderBy,companyId,baseUser);
+			return Result.failure(ResultCode.SUCCESS, page.toPageInfo());
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			e.printStackTrace();
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
+    /**
+     * 添加施工人员关联
+     * @param proCompanyUser
+     * @return
+     */
+    @ApiOperation(value="添加施工人员关联", notes="添加施工人员关联")
+	@PutMapping(value = "/addCpUser")
+	public Result addCpUser(ProCompanyUser proCompanyUser){
+    	try {
+    		Integer it = personalQualificationService.addCpUser(proCompanyUser);
+    		if(it==1){
+    			return Result.success();
+    		}else{
+    			return Result.failure(ResultCode.DATA_IS_WRONG);
+    		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
+    
+    /**
+     * 修改施工人员关联
+     * @param proCompanyUser
+     * @return
+     */
+    @ApiOperation(value="修改施工人员关联", notes="修改施工人员关联")
+    @PostMapping(value = "/updateCpUser")
+	public Result updateCpUser(ProCompanyUser proCompanyUser){
+    	try {
+    		Integer it = personalQualificationService.updateCpUser(proCompanyUser);
+    		if(it==1){
+    			return Result.success();
+    		}else{
+    			return Result.failure(ResultCode.DATA_IS_WRONG);
+    		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
+    
+    /**
+     * 删除施工人员关联
+     * @param comqId
+     * @param userId
+     * @return
+     */
+    @ApiOperation(value="删除施工人员关联", notes="删除施工人员关联")
+	@DeleteMapping(value = "/delCpUser")
+	public Result delCpUser(String comqId,String userId){
+    	try {
+    		Integer it = personalQualificationService.delCpUser(comqId,userId);
+    		if(it>0){
+    			return Result.success();
+    		}else{
+    			return Result.failure(ResultCode.DATA_IS_WRONG);
+    		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
+    
 	/**
 	 * @Description: 用户根据输入的姓名查询对应用户的信息
 	 * @param userNameAndPinyin 用户姓名或者输入首字母
