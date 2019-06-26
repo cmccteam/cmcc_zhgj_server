@@ -391,7 +391,7 @@ public class ExamMainServiceImpl implements ExamMainService {
         for (SubmitPaperResultRequest submitPaperResultRequest : submitPaperRequest.getResults()) {
             for (ExamLibPaper examLibPaper : examLibPapers) {
                 if (submitPaperResultRequest.getLibPaperId().equals(examLibPaper.getId()) && submitPaperResultRequest.getLibResult().equals(examLibPaper.getLibOk())) {
-                    score += examLibPaper.getSort();
+                    score += examLibPaper.getScore();
                 }
             }
         }

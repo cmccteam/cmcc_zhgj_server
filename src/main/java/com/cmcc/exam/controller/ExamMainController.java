@@ -171,6 +171,7 @@ public class ExamMainController {
 
     @ApiOperation(value = "获取在线竞赛的积分排行榜", notes = "获取在线竞赛的积分排行榜")
     @GetMapping("/getIntRank/{rows}")
+    @Deprecated
     public Result getIntRank(
             @ApiParam(name = "rows", value = "排行榜展示数量 ", required = true)
             @PathVariable Integer rows) {
