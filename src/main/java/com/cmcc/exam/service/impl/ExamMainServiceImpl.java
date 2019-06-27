@@ -176,7 +176,7 @@ public class ExamMainServiceImpl implements ExamMainService {
             examLibPaper.setLibType(examLib.getLibType());
             examLibPaper.setLibOk(examLib.getLibOk());
             examLibPaper.setSort(i + 1);
-            examLibPaper.setSort(examLib.getScore());
+            examLibPaper.setScore(examLib.getScore());
             examLibPaperDao.insert(examLibPaper);
         }
         return true;
