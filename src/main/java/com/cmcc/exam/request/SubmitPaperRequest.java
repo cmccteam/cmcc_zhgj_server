@@ -11,7 +11,7 @@ import java.util.List;
  */
 @ApiModel(value = "交卷请求参数")
 public class SubmitPaperRequest {
-    @ApiModelProperty(value = "用户ID", name = "userId", required = true)
+    @ApiModelProperty(value = "用户ID", name = "userId", hidden = true)
     private String userId;
     @ApiModelProperty(value = "试卷ID", name = "paperId", required = true)
     private String paperId;

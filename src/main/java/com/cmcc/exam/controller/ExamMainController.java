@@ -1,13 +1,13 @@
 package com.cmcc.exam.controller;
 
+import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
+import com.cmcc.config.interceptor.CurrentUser;
 import com.cmcc.exam.entity.ExamLibUser;
 import com.cmcc.exam.entity.ExamPaper;
 import com.cmcc.exam.request.SubmitPaperRequest;
-import com.cmcc.exam.response.ExamPaperPageResponse;
 import com.cmcc.exam.service.ExamMainService;
-import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -45,40 +45,19 @@ public class ExamMainController {
             @ApiParam(name = "title", value = "试卷名称", required = false)
             @RequestParam(value = "title", required = false)
                     String title,
-            @ApiParam(name = "userId", value = "用户ID", required = false)
-            @RequestParam(value = "userId", required = false)
-                    String userId,
             @ApiParam(name = "typeId", value = "知识类型ID", required = false)
             @RequestParam(value = "typeId", required = false)
                     String typeId,
-            @ApiParam(name = "status", value = "状态（是否参与：0否 1是）",allowableValues = "0, 1", required = false)
+            @ApiParam(name = "status", value = "状态（是否参与：0否 1是）", allowableValues = "0, 1", required = false)
             @RequestParam(value = "status", required = false)
-                    String status) {
-        try {
-            Page<ExamPaperPageResponse> page = examMainService.getMyExamPaperPage(pageNum, pageSize, orderBy, title, userId, typeId, status);
-            return Result.failure(ResultCode.SUCCESS, page.toPageInfo());
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+                    String status, @CurrentUser BaseUser baseUser) {
+        return examMainService.getMyExamPaperPage(pageNum, pageSize, orderBy, title, typeId, status, baseUser);
     }
 
     @ApiOperation(value = "添加试卷", notes = "添加试卷")
     @PutMapping("/paper")
-    public Result addExamPaper(ExamPaper examPaper) {
-        try {
-            Integer it = examMainService.add(examPaper);
-            if (it == 1) {
-                return Result.success();
-            } else {
-                return Result.failure(ResultCode.DATA_IS_WRONG);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+    public Result addExamPaper(ExamPaper examPaper, @CurrentUser BaseUser baseUser) {
+        return examMainService.add(examPaper, baseUser);
     }
 
     @ApiOperation(value = "更新试卷", notes = "根据实体ID更新试卷")
@@ -87,21 +66,9 @@ public class ExamMainController {
     public Result updateExamPaper(
             @ApiParam(name = "paperId", value = "试卷ID", required = true)
             @PathVariable String paperId,
-            ExamPaper examPaper) {
-
-        try {
-            examPaper.setPaperId(paperId);
-            Integer it = examMainService.update(examPaper);
-            if (it == 1) {
-                return Result.success();
-            } else {
-                return Result.failure(ResultCode.DATA_NOT_UPDATE);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+            ExamPaper examPaper, @CurrentUser BaseUser baseUser) {
+        examPaper.setPaperId(paperId);
+        return examMainService.update(examPaper, baseUser);
     }
 
     @ApiOperation(value = "删除试卷", notes = "根据ID删除试卷")
@@ -129,9 +96,9 @@ public class ExamMainController {
             @ApiParam(name = "typeId", value = "知识分类ID", required = true)
             @RequestParam("typeId") String typeId,
             @ApiParam(name = "file", value = "文件模板", required = true)
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("file") MultipartFile file, @CurrentUser BaseUser baseUser) {
         try {
-            return examMainService.importLib(typeId, file);
+            return examMainService.importLib(typeId, file, baseUser);
         } catch (Exception e) {
             log.error(e.getMessage());
             e.printStackTrace();
@@ -187,19 +154,17 @@ public class ExamMainController {
 
     @ApiOperation(value = "获取试卷题目", notes = "获取试卷题目")
     @PostMapping("/libPaper")
-    public Result libPaper(@ApiParam(name = "userId", value = "用户ID", required = true)
-                           @RequestParam(value = "userId", required = true)
-                                   String userId,
-                           @ApiParam(name = "paperId", value = "试卷ID", required = true)
-                           @RequestParam(value = "paperId", required = true)
-                                   String paperId) {
-        return examMainService.libPaper(userId, paperId);
+    public Result libPaper(
+            @ApiParam(name = "paperId", value = "试卷ID", required = true)
+            @RequestParam(value = "paperId")
+                    String paperId, @CurrentUser BaseUser baseUser) {
+        return examMainService.libPaper(paperId, baseUser);
     }
 
     @ApiOperation(value = "交卷", notes = "交卷")
     @PostMapping("/submitPaper")
-    public Result submitPaper(SubmitPaperRequest submitPaperRequest) {
-        return examMainService.submitPaper(submitPaperRequest);
+    public Result submitPaper(SubmitPaperRequest submitPaperRequest, @CurrentUser BaseUser baseUser) {
+        return examMainService.submitPaper(submitPaperRequest, baseUser);
     }
 
     @ApiOperation(value = "更新试卷状态", notes = "更新试卷状态")

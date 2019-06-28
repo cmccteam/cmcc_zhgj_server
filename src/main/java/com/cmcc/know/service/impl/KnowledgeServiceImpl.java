@@ -1,6 +1,5 @@
 package com.cmcc.know.service.impl;
 
-import com.cmcc.common.service.UserService;
 import com.cmcc.common.utils.IdGenerateUtil;
 import com.cmcc.know.dao.KnowledgeDao;
 import com.cmcc.know.entity.Knowledge;
@@ -26,9 +25,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Autowired
     private KnowledgeDao knowledgeDao;
-
-    @Autowired
-    private UserService userSerivce;
 
     @Override
     public Page<Knowledge> getPage(Integer pageNum, Integer pageSize, String orderBy, Knowledge hnowledge) {
