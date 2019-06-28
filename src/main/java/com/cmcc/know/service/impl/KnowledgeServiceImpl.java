@@ -1,7 +1,6 @@
 package com.cmcc.know.service.impl;
 
 import com.cmcc.common.bean.BaseUser;
-import com.cmcc.common.service.UserService;
 import com.cmcc.common.utils.IdGenerateUtil;
 import com.cmcc.know.dao.KnowledgeDao;
 import com.cmcc.know.entity.Knowledge;

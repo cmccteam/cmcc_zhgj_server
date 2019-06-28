@@ -1,11 +1,11 @@
 package com.cmcc.exam.service;
 
 
+import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.exam.entity.ExamLibUser;
 import com.cmcc.exam.entity.ExamPaper;
 import com.cmcc.exam.request.SubmitPaperRequest;
-import com.cmcc.exam.response.ExamPaperPageResponse;
 import com.github.pagehelper.Page;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,25 +43,24 @@ public interface ExamMainService {
      * @author zengzhibin
      * @date 2019年2月27日
      */
-    public Page<ExamPaperPageResponse> getMyExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId, String typeId, String status);
+    Result getMyExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String typeId, String status, BaseUser baseUser);
 
     /**
-     * @param examPaper 试卷实体
-     * @return Integer 1成功 0失败
-     * @Description: TODO 添加试卷
-     * @author zengzhibin
-     * @date 2019年2月27日
+     * 添加试卷
+     *
+     * @param examPaper
+     * @param baseUser
+     * @return
      */
-    public Integer add(ExamPaper examPaper);
+    Result add(ExamPaper examPaper, BaseUser baseUser);
 
     /**
-     * @param examPaper 试卷实体
-     * @return Integer 1成功 0失败
-     * @Description: TODO 更新试卷
-     * @author zengzhibin
-     * @date 2019年2月27日
+     * 更新试卷
+     *
+     * @param examPaper
+     * @return
      */
-    public Integer update(ExamPaper examPaper);
+    Result update(ExamPaper examPaper, BaseUser baseUser);
 
     /**
      * @param paperId 试卷ID
@@ -108,16 +107,15 @@ public interface ExamMainService {
      * @author zengzhibin
      * @date 2019年3月1日
      */
-    public Result importLib(String typeId, MultipartFile file);
+    Result importLib(String typeId, MultipartFile file, BaseUser baseUser);
 
     /**
      * 获取试卷题目
      *
-     * @param userId  用户ID
      * @param paperId 试卷ID
      * @return
      */
-    Result libPaper(String userId, String paperId);
+    Result libPaper(String paperId, BaseUser baseUser);
 
     /**
      * 交卷
@@ -125,7 +123,7 @@ public interface ExamMainService {
      * @param submitPaperRequest 交卷请求参数
      * @return
      */
-    Result submitPaper(SubmitPaperRequest submitPaperRequest);
+    Result submitPaper(SubmitPaperRequest submitPaperRequest, BaseUser baseUser);
 
     /**
      * 更新试卷状态

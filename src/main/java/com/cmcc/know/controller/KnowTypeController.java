@@ -1,7 +1,9 @@
 package com.cmcc.know.controller;
 
+import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
+import com.cmcc.config.interceptor.CurrentUser;
 import com.cmcc.know.entity.KnowType;
 import com.cmcc.know.service.KnowTypeService;
 import io.swagger.annotations.Api;
@@ -39,19 +41,8 @@ public class KnowTypeController {
 
     @ApiOperation(value = "添加资料类型", notes = "根据实体添加资料类型")
     @PutMapping
-    public Result addKnowType(KnowType knowType) {
-        try {
-            Integer it = knowTypeService.add(knowType);
-            if (it == 1) {
-                return Result.success();
-            } else {
-                return Result.failure(ResultCode.DATA_IS_WRONG);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+    public Result addKnowType(KnowType knowType, @CurrentUser BaseUser baseUser) {
+        return knowTypeService.add(knowType, baseUser);
     }
 
 
@@ -60,20 +51,9 @@ public class KnowTypeController {
     public Result updateKnowType(
             @ApiParam(name = "typeId", value = "资料类型ID", required = true)
             @PathVariable String typeId,
-            KnowType knowType) {
-        try {
-            knowType.setTypeId(typeId);
-            Integer it = knowTypeService.update(knowType);
-            if (it == 1) {
-                return Result.success();
-            } else {
-                return Result.failure(ResultCode.RESULE_DATA_NONE);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+            KnowType knowType, @CurrentUser BaseUser baseUser) {
+        knowType.setTypeId(typeId);
+        return knowTypeService.update(knowType, baseUser);
     }
 
 

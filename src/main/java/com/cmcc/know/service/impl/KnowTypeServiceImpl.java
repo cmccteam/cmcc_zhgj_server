@@ -1,10 +1,13 @@
 package com.cmcc.know.service.impl;
 
-import com.cmcc.common.service.UserService;
+import com.cmcc.common.bean.BaseUser;
+import com.cmcc.common.bean.Result;
+import com.cmcc.common.bean.ResultCode;
 import com.cmcc.common.utils.IdGenerateUtil;
 import com.cmcc.know.dao.KnowTypeDao;
 import com.cmcc.know.entity.KnowType;
 import com.cmcc.know.service.KnowTypeService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +30,26 @@ public class KnowTypeServiceImpl implements KnowTypeService {
 
     @Autowired
     private KnowTypeDao knowTypeDao;
-    @Autowired
-    private UserService userService;
 
     @Override
-    public Integer add(KnowType knowType) {
+    public Result add(KnowType knowType, BaseUser baseUser) {
+        if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
+            return Result.failure(ResultCode.USER_NOT_EXIST);
         knowType.setTypeId(IdGenerateUtil.uuid3());
-        knowType.setCreateUser(userService.getUserId());
+        knowType.setCreateUser(baseUser.getUserId());
         knowType.setCreateTime(new Date());
-        return knowTypeDao.insert(knowType);
+        knowTypeDao.insert(knowType);
+        return Result.success();
     }
 
     @Override
-    public Integer update(KnowType knowType) {
-        knowType.setCreateUser(userService.getUserId());
+    public Result update(KnowType knowType, BaseUser baseUser) {
+        if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
+            return Result.failure(ResultCode.USER_NOT_EXIST);
+        knowType.setCreateUser(baseUser.getUserId());
         knowType.setCreateTime(new Date());
-        return knowTypeDao.updateByPrimaryKey(knowType);
+        knowTypeDao.updateByPrimaryKey(knowType);
+        return Result.success();
     }
 
     @Override

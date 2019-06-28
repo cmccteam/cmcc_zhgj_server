@@ -1,5 +1,7 @@
 package com.cmcc.know.service;
 
+import com.cmcc.common.bean.BaseUser;
+import com.cmcc.common.bean.Result;
 import com.cmcc.know.entity.KnowType;
 
 import java.util.List;
@@ -15,22 +17,22 @@ public interface KnowTypeService {
 
 
     /**
-     * @param knowType 资料类型实体
-     * @return Integer 1成功 0失败
-     * @Description: TODO 添加资料类型
-     * @author zengzhibin
-     * @date 2019年2月27日
+     * 资料类型
+     *
+     * @param knowType
+     * @param baseUser
+     * @return
      */
-    public Integer add(KnowType knowType);
+    Result add(KnowType knowType, BaseUser baseUser);
 
     /**
-     * @param knowType 资料类型实体
-     * @return Integer 1成功 0失败
-     * @Description: TODO 更新资料类型
-     * @author zengzhibin
-     * @date 2019年2月27日
+     * 更新资料类型
+     *
+     * @param knowType
+     * @param baseUser
+     * @return
      */
-    public Integer update(KnowType knowType);
+    Result update(KnowType knowType, BaseUser baseUser);
 
     /**
      * @param typeId 资料类型ID
