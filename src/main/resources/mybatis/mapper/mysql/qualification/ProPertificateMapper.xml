@@ -107,8 +107,11 @@
   </select>
   
   <!-- 根据个人资质信息id查询资质详情 getPersonalQualificationInfo -->  
-  <select id="getPersonalQualificationInfo" parameterType="java.lang.String" resultType="java.util.Map">
-    select 
+  <select id="getPersonalQualificationInfo" parameterType="java.lang.String" resultType="com.cmcc.qualification.entity.ProPertificate">
+    select a.certificateName,a.certificateCode,
+	a.jobCategory,a.permitProject,a.effectiveDate,a.remark,
+	GROUP_CONCAT(fileId) fileId,GROUP_CONCAT(fileUrl) fileUrl from (
+select 
       p.certificate_name as certificateName,
       p.certificate_code as certificateCode,
       p.job_category as jobCategory,
@@ -120,6 +123,8 @@
     from pro_certificate p 
          left join file_store f on p.certificate_id=f.to_id 
     where p.certificate_id = #{certificateId}
+) a GROUP BY a.certificateName,a.certificateCode,
+	a.jobCategory,a.permitProject,a.effectiveDate,a.remark
   </select>
   
   <!-- delPersonalQuaInfo 根据个人资质id删除对应资质信息 -->
@@ -132,4 +137,44 @@
     delete from pro_certificate
     where fkcert_id = #{comqId,jdbcType=VARCHAR}
   </delete>
+  
+  <update id="updateByPrimarySelective" parameterType="com.cmcc.qualification.entity.ProPertificate">
+    update pro_certificate
+    <set>
+      <if test="fkcertId != null" >
+        fkcert_id = #{fkcertId}, 
+      </if>
+      <if test="certificateType != null" >
+        certificate_type = #{certificateType},
+      </if>
+      <if test="certificateName != null" >
+        certificate_name = #{certificateName},
+      </if>
+      <if test="certificateCode != null" >  
+        certificate_code = #{certificateCode},
+      </if>
+      <if test="jobCategory != null" >  
+        job_category = #{jobCategory},
+      </if>
+      <if test="permitProject != null" >  
+        permit_project = #{permitProject},
+      </if>
+      <if test="firstDate != null" >  
+        first_date = #{firstDate},
+      </if>
+      <if test="effectiveDate != null" >  
+        effective_date = #{effectiveDate},
+      </if>
+      <if test="fileUrl != null" >  
+        file_url = #{fileUrl},
+      </if>
+      <if test="createUser != null" >  
+        create_user = #{createUser},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark},
+      </if>
+    </set>
+    where certificate_id = #{certificateId}
+  </update>
 </mapper>

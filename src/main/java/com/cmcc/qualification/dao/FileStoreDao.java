@@ -27,4 +27,6 @@ public interface FileStoreDao {
      * @return
      */
 	Boolean insertObj(List<FileStore> listFileStore);
+
+	void deleteByToId(String certificateId);
 }

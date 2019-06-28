@@ -38,6 +38,18 @@ public class ProPertificate {
 	private String remark;
 	@ApiParam(value="有效期",required = false)
 	private String stringEffectiveDate;
+	
+	@ApiParam(hidden=true)
+	private String fileId;
+	
+	
+	public String getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
 
 	public String getCertificateId() {
 		return certificateId;

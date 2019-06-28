@@ -99,9 +99,13 @@
 		<table schema="zzb" tableName="sys_user_list" domainObjectName="SysUserList"
 			enableCountByExample="false" enableSelectByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false">
+		</table> 
+		<table schema="zzb" tableName="pro_company_user" domainObjectName="ProCompanyUser"
+			enableCountByExample="false" enableSelectByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false">
 		</table> -->
 		
-		<table schema="zzb" tableName="pro_company_user" domainObjectName="ProCompanyUser"
+		<table schema="zzb" tableName="da_knowledge_user" domainObjectName="DaKnowledgeUser"
 			enableCountByExample="false" enableSelectByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false">
 		</table>

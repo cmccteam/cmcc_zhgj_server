@@ -65,4 +65,10 @@ public interface CompanyQualificationService {
 	 */
 	Integer del(String comqId);
 
+	/**
+	 * 获取所有施工单位与人员
+	 * @return
+	 */
+	List<ProCompanyQua> getCompanyUser();
+
 }

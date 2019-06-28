@@ -72,14 +72,14 @@ public interface PersonalQualificationService {
 	 * @param certificateId 资质信息id
 	 * @return
 	 */
-	Map<String, String> getPersonalQualificationInfo(String certificateId);
+	ProPertificate getPersonalQualificationInfo(String certificateId);
 
 	/**
 	 * 根据个人资质id删除对应资质信息
 	 * @param certificateId 资质信息id
 	 * @return
 	 */
-	Boolean delPersonalQualificationInfo(String certificateId);
+	Boolean delPersonalQualificationInfo(String certificateId,String comqId,String userId) throws Exception;
 
 	/**
 	 * 分页获取个人信息
@@ -90,13 +90,12 @@ public interface PersonalQualificationService {
 	 * @param baseUser
 	 * @return
 	 */
-	Page<SysUser> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId,
-			BaseUser baseUser);
+	Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId);
 
-	Integer addCpUser(ProCompanyUser proCompanyUser);
+	Integer addCpUser(ProCompanyUser proCompanyUser,ProPertificate proPertificate,String userAccount,String tenantId) throws Exception;
 
-	Integer updateCpUser(ProCompanyUser proCompanyUser);
+	List<Map<String, String>> getUserList(ProCompanyUser proCompanyUser);
 
-	Integer delCpUser(String comqId, String userId);
+	Integer saveProPertificate(ProPertificate proPertificate, String certificateId);
 
 }

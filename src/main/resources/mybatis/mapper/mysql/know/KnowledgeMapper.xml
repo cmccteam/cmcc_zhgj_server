@@ -87,6 +87,75 @@
         </where>
     </select>
 
+	<select id="selectMyPage" parameterType="java.lang.String" resultType="com.cmcc.know.entity.KnowledgeVo">
+        select
+        k.hnow_id hnowId,
+        k.type_id typeId,
+        k.type_name typeName,
+        k.dictionary_id dictionaryId,
+        k.dictionary_value dictionaryValue,
+        k.create_time createTime,
+        k.send_time sendTime,
+        k.attachment attachment,
+        k.title title,
+        k.brief brief,
+        k.status status,
+        k.del_flag delFlag,
+        k.content content,
+        u.user_id myUserId,
+        u.user_name userName,
+        u.status userStatus
+        from da_knowledge k left join da_knowledge_user u on u.hnow_id=k.hnow_id
+        <where>
+        	<if test="myUserId != null">
+                AND u.user_id=#{myUserId,jdbcType=VARCHAR}
+            </if>
+            <if test="selectField != null">
+                AND (
+                k.type_name like CONCAT('%',#{selectField},'%') or
+                k.dictionary_value like CONCAT('%',#{selectField},'%') or
+                k.title like CONCAT('%',#{selectField},'%')
+                )
+            </if>
+            <if test="typeId != null">
+                AND k.type_id = #{typeId,jdbcType=VARCHAR}
+            </if>
+            <if test="typeName != null">
+                AND k.type_name = #{typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="dictionaryId != null">
+                AND k.dictionary_id = #{dictionaryId,jdbcType=VARCHAR}
+            </if>
+            <if test="dictionaryValue != null">
+                AND k.dictionary_value = #{dictionaryValue,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                AND k.create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="sendTime != null">
+                AND k.send_time = #{sendTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="attachment != null">
+                AND k.attachment = #{attachment,jdbcType=VARCHAR}
+            </if>
+            <if test="title != null">
+                AND k.title = #{title,jdbcType=VARCHAR}
+            </if>
+            <if test="brief != null">
+                AND k.brief = #{brief,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND k.status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="delFlag != null">
+                AND k.del_flag = #{delFlag,jdbcType=VARCHAR}
+            </if>
+            <if test="content != null">
+                AND k.content = #{content,jdbcType=LONGVARCHAR}
+            </if>
+        </where>
+    </select>
+    
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from da_knowledge
     where hnow_id = #{hnowId,jdbcType=VARCHAR}

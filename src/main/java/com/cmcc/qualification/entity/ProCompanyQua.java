@@ -1,6 +1,8 @@
 package com.cmcc.qualification.entity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import io.swagger.annotations.ApiParam;
 
@@ -32,6 +34,18 @@ public class ProCompanyQua{
 	private Date createTime;
 	@ApiParam(value="公司备注",required = false)
 	private String remarks;
+
+	@ApiParam(hidden=true)
+	private List<Map<String, Object>> users;
+	
+	
+	public List<Map<String, Object>> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<Map<String, Object>> users) {
+		this.users = users;
+	}
 
 	public String getComqId() {
 		return comqId;

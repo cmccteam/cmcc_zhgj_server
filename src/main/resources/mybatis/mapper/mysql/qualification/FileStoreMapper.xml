@@ -196,4 +196,9 @@
 		)
     </foreach>
   </insert>
+  
+  <delete id="deleteByToId" parameterType="java.lang.String">
+    delete from file_store
+    where to_id = #{certificateId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

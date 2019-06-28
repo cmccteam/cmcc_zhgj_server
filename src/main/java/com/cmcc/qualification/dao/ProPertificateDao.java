@@ -36,7 +36,7 @@ public interface ProPertificateDao {
 	 * @param certificateId 资质信息id
 	 * @return
 	 */
-	Map<String, String> getPersonalQualificationInfo(String certificateId);
+	ProPertificate getPersonalQualificationInfo(String certificateId);
 
 	/**
 	 * 根据个人资质信息id删除对应资质
@@ -51,5 +51,7 @@ public interface ProPertificateDao {
 	 * @return
 	 */
 	Integer deleteByFkcertId(@Param(value="comqId") String comqId);
+
+	Integer updateByPrimarySelective(ProPertificate proPertificate);
 
 }

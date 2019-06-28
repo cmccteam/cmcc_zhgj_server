@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
+import com.cmcc.config.interceptor.CurrentUser;
 import com.cmcc.qualification.entity.ProCompanyQua;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.service.CompanyQualificationService;
@@ -232,5 +233,15 @@ public class CompanyQualificationController{
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
 	}
 
-
+    @ApiOperation(value="获取所有施工单位与人员", notes="获取所有施工单位与人员")
+	@GetMapping("/getCompanyUser")
+	public Result getCompanyUser(){
+    	try {
+    		List<ProCompanyQua> list = companyQualificationService.getCompanyUser();
+    		return Result.success(list);
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
 }

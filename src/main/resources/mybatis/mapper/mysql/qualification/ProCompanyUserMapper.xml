@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cmcc.qualification.dao.ProCompanyUserMapper">
+<mapper namespace="com.cmcc.qualification.dao.ProCompanyUserDao">
   <resultMap id="BaseResultMap" type="com.cmcc.qualification.entity.ProCompanyUser">
     <id column="cp_user_id" jdbcType="VARCHAR" property="cpUserId" />
     <result column="comq_id" jdbcType="VARCHAR" property="comqId" />
@@ -17,6 +17,35 @@
     from pro_company_user
     where cp_user_id = #{cpUserId,jdbcType=VARCHAR}
   </select>
+  
+  <select id="selectPage" parameterType="java.lang.String" resultType="map">
+    select * from pro_company_user us LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+    where comq_id = #{companyId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectList" parameterType="java.lang.String" resultType="map">
+    select us.user_id comqId,us.user_name comqName,us.*,c.* from pro_company_user us LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+    where comq_id = #{comqId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectUserList" resultType="map">
+    select * from pro_company_user us LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+    <where>
+    	  <if test="comqId != null">
+	         and us.comq_id = #{comqId,jdbcType=VARCHAR}
+	      </if>
+	      <if test="userId != null">
+	         and us.user_id = #{userId,jdbcType=VARCHAR}
+	      </if>
+	      <if test="userName != null">
+	         and us.user_name = #{userName,jdbcType=VARCHAR}
+	      </if>
+	      <if test="userTel != null">
+	         and us.user_tel = #{userTel,jdbcType=VARCHAR}
+	      </if>
+    </where>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pro_company_user
     where cp_user_id = #{cpUserId,jdbcType=VARCHAR}
@@ -90,4 +119,39 @@
       user_tel = #{userTel,jdbcType=VARCHAR}
     where cp_user_id = #{cpUserId,jdbcType=VARCHAR}
   </update>
+  
+  <update id="updateData" parameterType="com.cmcc.qualification.entity.ProCompanyUser">
+    update pro_company_user
+    <set>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null">
+        user_tel = #{userTel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <where> 
+    <if test="comqId != null">
+    	AND cp_user_id = #{cpUserId,jdbcType=VARCHAR}
+    </if>
+     <if test="comqId != null">
+       AND comq_id = #{comqId,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null">
+        AND user_id = #{userId,jdbcType=VARCHAR}
+      </if>
+      </where>
+  </update>
+  
+  <delete id="deleteData" parameterType="java.lang.String">
+    delete from pro_company_user
+    <where>
+		<if test="comqId != null">
+       AND comq_id = #{comqId,jdbcType=VARCHAR}
+      </if>
+      <if test="userId != null">
+        AND user_id = #{userId,jdbcType=VARCHAR}
+      </if>
+     </where>
+  </delete>
 </mapper>

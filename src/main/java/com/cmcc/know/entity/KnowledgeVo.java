@@ -15,7 +15,7 @@ import io.swagger.annotations.ApiModelProperty;
  */
 
 @ApiModel(value="资料库实体",description="资料库实体")
-public class Knowledge {
+public class KnowledgeVo {
 	
 	@ApiModelProperty(hidden=true)
     private String hnowId;
@@ -51,6 +51,40 @@ public class Knowledge {
     private String status;
     @ApiModelProperty(hidden=true)
     private String delFlag;
+
+    @ApiModelProperty(hidden=true)
+    private String myUserId;
+    
+    @ApiModelProperty(hidden=true)
+    private String userName;
+    
+    @ApiModelProperty(hidden=true)
+    private String userStatus;
+    
+    
+    public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserStatus() {
+		return userStatus;
+	}
+
+	public void setUserStatus(String userStatus) {
+		this.userStatus = userStatus;
+	}
+
+	public String getMyUserId() {
+		return myUserId;
+	}
+
+	public void setMyUserId(String myUserId) {
+		this.myUserId = myUserId;
+	}
 
 	public String getSelectField() {
 		return selectField;

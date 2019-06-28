@@ -13,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cmcc.common.utils.IdGenerateUtil;
 import com.cmcc.common.utils.Sort;
 import com.cmcc.qualification.dao.ProCompanyQuaDao;
+import com.cmcc.qualification.dao.ProCompanyUserDao;
 import com.cmcc.qualification.dao.ProPertificateDao;
 import com.cmcc.qualification.entity.ProCompanyQua;
+import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.service.CompanyQualificationService;
 import com.github.pagehelper.Page;
@@ -32,6 +34,9 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 	
 	@Autowired
 	private ProPertificateDao proPertificateDao;
+	
+	@Autowired
+	private ProCompanyUserDao proCompanyUserDao;
 	
 	@Override
 	public List<Map<String, String>> getList(String comqNameOrComqPinyin) {
@@ -93,6 +98,16 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 	public Integer del(String comqId) {
 		proPertificateDao.deleteByFkcertId(comqId);
 		return proCompanyQuaDao.deleteByPrimaryKey(comqId);
+	}
+
+	@Override
+	public List<ProCompanyQua> getCompanyUser() {
+		List<ProCompanyQua> pl = proCompanyQuaDao.selectAllProCompanyQuas();
+		for (ProCompanyQua proCompanyQua : pl) {
+			List<Map<String, Object>> ul = proCompanyUserDao.selectList(proCompanyQua.getComqId());
+			proCompanyQua.setUsers(ul);
+		}
+		return pl;
 	}
 
 	

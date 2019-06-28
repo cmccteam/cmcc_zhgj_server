@@ -12,14 +12,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
-//import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
+
 
 
 @SpringBootApplication
 @EnableEurekaClient
 @EnableFeignClients
 @EnableCircuitBreaker
-//@EnableDistributedTransaction
+@EnableDistributedTransaction
 @ServletComponentScan
 public class BootApplication {
 

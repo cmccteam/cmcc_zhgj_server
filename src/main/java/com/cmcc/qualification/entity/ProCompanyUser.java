@@ -1,14 +1,17 @@
 package com.cmcc.qualification.entity;
 
+import io.swagger.annotations.ApiParam;
+
 public class ProCompanyUser {
+	@ApiParam(hidden=true) 
     private String cpUserId;
-
+	@ApiParam(value="施工单位ID",required = false)
     private String comqId;
-
+	@ApiParam(value="施工人员用户ID",required = false)
     private String userId;
-
+	@ApiParam(value="用户姓名",required = false)
     private String userName;
-
+	@ApiParam(value="用户手机号",required = false)
     private String userTel;
 
     public String getCpUserId() {

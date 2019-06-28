@@ -1,8 +1,11 @@
 package com.cmcc.know.controller;
 
+import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
+import com.cmcc.config.interceptor.CurrentUser;
 import com.cmcc.know.entity.Knowledge;
+import com.cmcc.know.entity.KnowledgeVo;
 import com.cmcc.know.service.KnowledgeService;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.Api;
@@ -46,6 +49,74 @@ public class KnowledgeController {
         return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
     }
 
+    @ApiOperation(value = "分页获取我的资料库", notes = "分页获取我的资料库")
+    @GetMapping(value = "/getMyPage")
+    public Result getMyPage(
+            @ApiParam(name = "pageNum", value = "页码，从1开始，默认为1", required = true)
+            @RequestParam(value = "pageNum", defaultValue = "1")
+                    Integer pageNum,
+            @ApiParam(name = "pageSize", value = "每页大小，默认为10", required = true)
+            @RequestParam(value = "pageSize", defaultValue = "10")
+                    Integer pageSize,
+            @ApiParam(name = "orderBy", value = "排序字段 ，‘order desc’", required = false)
+            @RequestParam(value = "orderBy", required = false)
+                    String orderBy,
+            KnowledgeVo hnowledge,@CurrentUser BaseUser baseUser) {
+        try {
+            Page<KnowledgeVo> page = knowledgeService.getMyPage(pageNum, pageSize, orderBy, hnowledge,baseUser);
+            return Result.failure(ResultCode.SUCCESS, page.toPageInfo());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+    }
+    
+    @ApiOperation(value = "资料规范标记已读", notes = "资料规范标记已读")
+    @PostMapping("/consult/{hnowId}")
+    public Result consultMyHnow(
+            @ApiParam(name = "hnowId", value = "资料库ID", required = true)
+            @PathVariable String hnowId,@CurrentUser BaseUser baseUser) {
+        try {
+            Integer it = knowledgeService.consultMyHnow(hnowId,baseUser.getUserId());
+            if (it == 1) {
+                return Result.success();
+            } else {
+                return Result.failure(ResultCode.RESULE_DATA_NONE);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+    }
+    
+    
+    @ApiOperation(value = "指定人员查阅资料规范", notes = "指定人员查阅资料规范")
+    @PutMapping("/addKnowUser/{hnowId}")
+    public Result addKnowUser(
+            @ApiParam(name = "hnowId", value = "资料库ID", required = true)
+            @PathVariable String hnowId,
+            @ApiParam(name = "userIds", value = "用户ID串，id1,id2,...", required = true)
+            @RequestParam(value = "userIds", required = true)
+            String userIds,
+            @ApiParam(name = "userNames", value = "用户姓名串，id1,id2,...", required = true)
+            @RequestParam(value = "userNames", required = true)
+            String userNames) {
+        try {
+            Integer it = knowledgeService.addKnowUser(hnowId,userIds,userNames);
+            if (it == 1) {
+                return Result.success();
+            } else {
+                return Result.failure(ResultCode.RESULE_DATA_NONE);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+    }
+    
     @ApiOperation(value = "根据ID获取资料库", notes = "根据ID获取资料库")
     @GetMapping(value = "/{hnowId}")
     public Result getKnowLedge(

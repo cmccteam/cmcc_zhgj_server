@@ -114,7 +114,7 @@
 		
 		<!-- =============spring cloud end ================ -->
 		
-		<!-- <dependency>
+		<dependency>
             <groupId>com.codingapi.txlcn</groupId>
             <artifactId>txlcn-tc</artifactId>
             <version>5.0.2.RELEASE</version>
@@ -124,7 +124,7 @@
             <groupId>com.codingapi.txlcn</groupId>
             <artifactId>txlcn-txmsg-netty</artifactId>
             <version>5.0.2.RELEASE</version>
-        </dependency> -->
+        </dependency>
         
 	    <dependency>
 	            <groupId>net.logstash.logback</groupId>
@@ -216,7 +216,12 @@
 			    <artifactId>java-jwt</artifactId>
 			    <version>${java-jwt.version}</version>
 			</dependency>
-  	</dependencies>
+	        <dependency>
+	        	<groupId>org.scala-lang</groupId>
+	        	<artifactId>scala-library</artifactId>
+	        	<version>2.11.0</version>
+	        </dependency>
+  </dependencies>
   	<build>
 		<!-- 指定最终生成包的文件名-->
 		<finalName>AuthorityManagement_MetaDataManagement_Boot</finalName>

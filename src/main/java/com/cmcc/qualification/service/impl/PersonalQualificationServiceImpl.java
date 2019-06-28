@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cmcc.common.bean.BaseUser;
+import com.cmcc.common.bean.Result;
 import com.cmcc.common.service.SystemService;
 import com.cmcc.common.utils.IdGenerateUtil;
 import com.cmcc.common.utils.Sort;
@@ -38,8 +39,10 @@ import com.cmcc.qualification.entity.SysUser;
 import com.cmcc.qualification.service.PersonalQualificationService;
 import com.cmcc.qualification.vo.SysUserVo;
 import com.cmcc.qualification.vo.UserInfoVo;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+
 
 /**
  * 资质信息业务层实现类
@@ -237,49 +240,102 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 	}
 
 	@Override
-	public Map<String, String> getPersonalQualificationInfo(String certificateId) {
+	public ProPertificate getPersonalQualificationInfo(String certificateId) {
 		return proPertificateDao.getPersonalQualificationInfo(certificateId);
 	}
 
+	@LcnTransaction
 	@Override
-	public Boolean delPersonalQualificationInfo(String certificateId) {
-		return proPertificateDao.delPersonalQuaInfo(certificateId);
+	public Boolean delPersonalQualificationInfo(String certificateId,String comqId,String userId) throws Exception{
+		proCompanyUserDao.deleteData(comqId,userId);
+		proPertificateDao.delPersonalQuaInfo(certificateId);
+		Integer it = systemService.removeUser(userId);
+		if(it!=1){
+			throw new Exception("根据用户ID删除用户异常，分布式事物回滚");
+		}
+		return true;
 	}
 
 	@Override
-	public Page<com.cmcc.common.bean.SysUser> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId,
-			BaseUser baseUser) {
+	public Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId) {
 		PageHelper.startPage(pageNum,pageSize,orderBy);
-		Page<ProCompanyUser> page = proCompanyUserDao.selectPage(companyId);
-		List<ProCompanyUser> list = page.getResult();
-		List<com.cmcc.common.bean.SysUser> users = systemService.getZhgjUsers(baseUser);
-		Page<com.cmcc.common.bean.SysUser> nowPage = new Page<com.cmcc.common.bean.SysUser>();
-		for (ProCompanyUser pc : list) {
-			for (com.cmcc.common.bean.SysUser user : users) {
-				if(pc.getUserId().equals(user.getUserId())){
-					nowPage.add(user);
-				}
+		return proCompanyUserDao.selectPage(companyId);
+	}
+	
+	@Override
+	public List<Map<String, String>> getUserList(ProCompanyUser proCompanyUser) {
+		return proCompanyUserDao.selectUserList(proCompanyUser);
+	}
+	
+	@LcnTransaction
+	@Override
+	public Integer addCpUser(ProCompanyUser proCompanyUser,ProPertificate proPertificate,String userAccount,String tenantId) throws Exception{
+
+		com.cmcc.common.bean.SysUser user = new com.cmcc.common.bean.SysUser();
+		user.setUserAccount(userAccount);
+		user.setTenantId(tenantId);
+		user.setUserName(proCompanyUser.getUserName());
+		user.setUserTel(proCompanyUser.getUserTel());
+		Result result = systemService.register(user);
+		if(result.getCode()!=0){
+			throw new Exception("用户添加异常，分布式事物回滚");
+		}
+		Map<String,Object> obj = (Map<String, Object>) result.getData();
+		proCompanyUser.setCpUserId(IdGenerateUtil.uuid3());
+		proCompanyUser.setUserId(obj.get("userId").toString());
+		proCompanyUserDao.insertSelective(proCompanyUser);
+		
+		String certificateId = IdGenerateUtil.uuid3();
+		proPertificate.setCertificateId(certificateId);
+		proPertificate.setFkcertId(obj.get("userId").toString());
+		List<FileStore> listFileStore = new ArrayList<>();
+		if (proPertificate.getFileUrl() != null) {
+			String[] urls = proPertificate.getFileUrl().split("#");
+			for (String url :urls) {
+				FileStore fileStore = new FileStore();
+				fileStore.setFileId(IdGenerateUtil.uuid3());
+				fileStore.setToId(certificateId);
+				fileStore.setFileUrl(url);
+				fileStore.setFileType("图片");
+				fileStore.setSendTime(new Date());
+				fileStore.setStatus("0");
+				listFileStore.add(fileStore);
 			}
 		}
-		nowPage.setTotal(page.getTotal());
-		nowPage.setPageNum(page.getPageNum());
-		nowPage.setPageSize(page.getPageSize());
-		nowPage.setPages(page.getPages());
-		return nowPage;
-	}
-	@Override
-	public Integer addCpUser(ProCompanyUser proCompanyUser){
-		proCompanyUser.setCpUserId(IdGenerateUtil.uuid3());
-		return proCompanyUserDao.insertSelective(proCompanyUser);
+		proPertificateDao.addProPertificate(proPertificate);
+		Boolean flag = false;
+		if (listFileStore.size() > 0 && !listFileStore.isEmpty()) {
+			flag = fileStoreDao.insertObj(listFileStore);
+		}
+		log.info("批量更新图片是否成功："+flag);
+		return 1;
+		
 	}
 
 	@Override
-	public Integer updateCpUser(ProCompanyUser proCompanyUser){
-		return proCompanyUserDao.updateData(proCompanyUser);
-	}
-
-	@Override
-	public Integer delCpUser(String comqId,String userId){
-		return proCompanyUserDao.deleteData(comqId,userId);
+	public Integer saveProPertificate(ProPertificate proPertificate, String certificateId) {
+		proPertificate.setCertificateId(certificateId);
+		List<FileStore> listFileStore = new ArrayList<>();
+		if (proPertificate.getFileUrl() != null) {
+			String[] urls = proPertificate.getFileUrl().split("#");
+			for (String url :urls) {
+				FileStore fileStore = new FileStore();
+				fileStore.setFileId(IdGenerateUtil.uuid3());
+				fileStore.setToId(certificateId);
+				fileStore.setFileUrl(url);
+				fileStore.setFileType("图片");
+				fileStore.setSendTime(new Date());
+				fileStore.setStatus("0");
+				listFileStore.add(fileStore);
+			}
+		}
+		Integer f = proPertificateDao.updateByPrimarySelective(proPertificate);
+		fileStoreDao.deleteByToId(certificateId);
+		Boolean flag = false;
+		if (listFileStore.size() > 0 && !listFileStore.isEmpty()) {
+			flag = fileStoreDao.insertObj(listFileStore);
+		}
+		log.info("批量更新图片是否成功："+flag);
+		return f;
 	}
 }

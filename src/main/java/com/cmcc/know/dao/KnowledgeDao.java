@@ -1,6 +1,7 @@
 package com.cmcc.know.dao;
 
 import com.cmcc.know.entity.Knowledge;
+import com.cmcc.know.entity.KnowledgeVo;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -29,4 +30,6 @@ public interface KnowledgeDao {
     int updateByPrimaryKey(Knowledge record);
 
 	Page<Knowledge> selectPage(Knowledge record);
+
+	Page<KnowledgeVo> selectMyPage(KnowledgeVo hnowledge);
 }

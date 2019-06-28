@@ -1,6 +1,8 @@
 package com.cmcc.know.service;
 
+import com.cmcc.common.bean.BaseUser;
 import com.cmcc.know.entity.Knowledge;
+import com.cmcc.know.entity.KnowledgeVo;
 import com.github.pagehelper.Page;
 
 /**
@@ -59,6 +61,13 @@ public interface KnowledgeService {
      * @date 2019年3月5日
      */
     public Knowledge getKnowLedge(String hnowId);
+
+	public Page<KnowledgeVo> getMyPage(Integer pageNum, Integer pageSize, String orderBy, KnowledgeVo hnowledge,
+			BaseUser baseUser);
+
+	public Integer consultMyHnow(String hnowId, String userId);
+
+	public Integer addKnowUser(String hnowId, String userIds, String userNames);
 
 
 }

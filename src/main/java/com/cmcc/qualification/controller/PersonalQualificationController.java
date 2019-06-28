@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,7 +22,6 @@ import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
 import com.cmcc.config.interceptor.CurrentUser;
-import com.cmcc.know.entity.Knowledge;
 import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.service.PersonalQualificationService;
@@ -68,9 +66,9 @@ public class PersonalQualificationController{
 			String orderBy,
 			@ApiParam(name="companyId",value="公司ID",required=false)
 			@RequestParam(value="companyId",required=false)
-			String companyId,@CurrentUser BaseUser baseUser){
+			String companyId){
 		try {
-			Page<com.cmcc.common.bean.SysUser> page = personalQualificationService.getPage(pageNum, pageSize, orderBy,companyId,baseUser);
+			Page<Map<String,String>> page = personalQualificationService.getPage(pageNum, pageSize, orderBy,companyId);
 			return Result.failure(ResultCode.SUCCESS, page.toPageInfo());
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -78,33 +76,55 @@ public class PersonalQualificationController{
 		}
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
 	}
-    /**
-     * 添加施工人员关联
-     * @param proCompanyUser
-     * @return
-     */
-    @ApiOperation(value="添加施工人员关联", notes="添加施工人员关联")
-	@PutMapping(value = "/addCpUser")
-	public Result addCpUser(ProCompanyUser proCompanyUser){
-    	try {
-    		Integer it = personalQualificationService.addCpUser(proCompanyUser);
-    		if(it==1){
-    			return Result.success();
-    		}else{
-    			return Result.failure(ResultCode.DATA_IS_WRONG);
-    		}
+    
+    @ApiOperation(value="获取所有个人信息", notes="获取所有个人信息")
+	@GetMapping(value = "/getUserList")
+	public Result getUserList(ProCompanyUser proCompanyUser){
+		try {
+			List<Map<String,String>> list = personalQualificationService.getUserList(proCompanyUser);
+			return Result.failure(ResultCode.SUCCESS, list);
 		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
 			e.printStackTrace();
 		}
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
 	}
     
     /**
+     * 添加施工人员与资质证书
+     * @param proCompanyUser
+     * @return
+     */
+    @ApiOperation(value="添加施工人员与资质证书", notes="添加施工人员与资质证书")
+	@PutMapping(value = "/addCpUser")
+	public Result addCpUser(ProPertificate proPertificate, ProCompanyUser proCompanyUser,
+			@ApiParam(name="userAccount",value="用户账号",required=true)
+			@RequestParam(value="userAccount",required=true)
+			String userAccount,@CurrentUser BaseUser baseUser){
+    	try {
+    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    		if (StringUtils.isNotBlank(proPertificate.getStringEffectiveDate())) {
+				Date effectiveDate = dateFormat.parse(proPertificate.getStringEffectiveDate());
+				proPertificate.setEffectiveDate(effectiveDate);
+			}
+    		Integer it = personalQualificationService.addCpUser(proCompanyUser,proPertificate,userAccount,baseUser.getTenantId());
+    		if(it==1){
+    			return Result.success();
+    		}else{
+    			return Result.failure(ResultCode.DATA_IS_WRONG);
+    		}
+		} catch (Exception e) {
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
+    
+    
+    /**
      * 修改施工人员关联
      * @param proCompanyUser
      * @return
      */
-    @ApiOperation(value="修改施工人员关联", notes="修改施工人员关联")
+    /*@ApiOperation(value="修改施工人员关联", notes="修改施工人员关联")
     @PostMapping(value = "/updateCpUser")
 	public Result updateCpUser(ProCompanyUser proCompanyUser){
     	try {
@@ -118,7 +138,7 @@ public class PersonalQualificationController{
 			e.printStackTrace();
 		}
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
-	}
+	}*/
     
     /**
      * 删除施工人员关联
@@ -126,7 +146,7 @@ public class PersonalQualificationController{
      * @param userId
      * @return
      */
-    @ApiOperation(value="删除施工人员关联", notes="删除施工人员关联")
+    /*@ApiOperation(value="删除施工人员关联", notes="删除施工人员关联")
 	@DeleteMapping(value = "/delCpUser")
 	public Result delCpUser(String comqId,String userId){
     	try {
@@ -140,7 +160,7 @@ public class PersonalQualificationController{
 			e.printStackTrace();
 		}
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
-	}
+	}*/
     
 	/**
 	 * @Description: 用户根据输入的姓名查询对应用户的信息
@@ -314,10 +334,11 @@ public class PersonalQualificationController{
 	@GetMapping(path="/getQuaInfo")
 	public Result getPersonalQualificationInfo(
 			@ApiParam(name="certificateId",value="资质信息id",required=true)
+			@RequestParam(value="certificateId",required=true)
 			String certificateId){
 		try {
 			LOGGER.info("查看个人资质详情的资质信息id为:"+certificateId);
-			Map<String,String>  personalInfo = personalQualificationService.getPersonalQualificationInfo(certificateId);
+			ProPertificate  personalInfo = personalQualificationService.getPersonalQualificationInfo(certificateId);
 			if (personalInfo != null) {
 				return Result.failure(ResultCode.SUCCESS, personalInfo);
     		} else {
@@ -330,19 +351,24 @@ public class PersonalQualificationController{
 	}
 	
 	/**
-	 * @Description: 删除个人资质信息
+	 * @Description: 删除个人信息与资质信息
 	 * @return 
-	 * @author liuhaihe
      * @date 2019年2月28日
 	 */
-	@ApiOperation(value="删除个人资质", notes="根据资质信息id删除个人信息资质")
+	@ApiOperation(value="删除个人信息与资质信息", notes="删除个人信息与资质信息")
 	@PostMapping(path="/delQuaInfo")
 	public Result delPersonalQualificationInfo(
 			@ApiParam(name="certificateId",value="资质信息id",required=true)
-			String certificateId){
+			@RequestParam(value="certificateId",required=true)
+			String certificateId,
+			@ApiParam(name="comqId",value="施工单位id",required=true)
+			@RequestParam(value="comqId",required=true)
+			String comqId,
+			@ApiParam(name="userId",value="施工人员id",required=true)
+			@RequestParam(value="userId",required=true)
+			String userId){
 		try {
-			LOGGER.info("删除个人资质的资质信息id为:"+certificateId);
-			Boolean flag = personalQualificationService.delPersonalQualificationInfo(certificateId);
+			Boolean flag = personalQualificationService.delPersonalQualificationInfo(certificateId,comqId,userId);
 			if (flag == true) {
 				return Result.success();
     		} else {
@@ -378,6 +404,38 @@ public class PersonalQualificationController{
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
 	}
 	
-
+	/**
+	 * @Description: 修改个人的资质信息
+	 * @param userId 用户id
+	 * @param ProPertificate 资质信息
+	 * @return 
+	 * @author liuhaihe
+     * @date 2019年6月27日
+	 */
+	@ApiOperation(value="修改个人资质信息", notes="获取实体对象修改个人的资质信息")
+	@PostMapping(path="/saveProPertificate")
+	public Result savePersonalQualification(
+			ProPertificate proPertificate, 
+			@ApiParam(name="certificateId",value="资质信息id",required=true)
+			@RequestParam String certificateId){
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		LOGGER.info("参数为:"+proPertificate.getStringEffectiveDate());
+		LOGGER.info("增加个人资质信息id为:"+certificateId);
+		try {
+			if (StringUtils.isNotBlank(proPertificate.getStringEffectiveDate())) {
+				Date effectiveDate = dateFormat.parse(proPertificate.getStringEffectiveDate());
+				proPertificate.setEffectiveDate(effectiveDate);
+			}
+			Integer t = personalQualificationService.saveProPertificate(proPertificate,certificateId);
+	  	    if (t > 0) {
+    			return Result.success();
+    		} else {
+    			return Result.failure(ResultCode.RESULE_DATA_NONE);
+    		}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+	}
 
 }
