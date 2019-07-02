@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.service.SystemService;
 import com.cmcc.common.utils.IdGenerateUtil;
@@ -80,10 +79,16 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 	@Override
 	public SysUserVo getUserinfo(String userId) {
 		SysUserVo sysUserVo = new SysUserVo();
-		Map<String, Object> userInfo = sysUserDao.selectUserinfoByUserId(userId);
+		ProCompanyUser proCompanyUser = proCompanyUserDao.selectByUserId(userId);
 		List<ProPertificate> proPertificateList = proPertificateDao.selectAllProPertificateByUserId(userId);
-		if (userInfo != null) {
-			sysUserVo.setSysUser(userInfo);
+		if (proPertificateList.size() > 0) {
+			for (ProPertificate proPertificate : proPertificateList) {
+				String fileUrl = fileStoreDao.selectByCertificateId(proPertificate.getCertificateId());
+				proPertificate.setFileUrl(fileUrl);
+			}
+		}
+		if (proCompanyUser != null) {
+			sysUserVo.setProCompanyUser(proCompanyUser);
 		}
 		if (proPertificateList.size() > 0) {
 			sysUserVo.setProPertificateLists(proPertificateList);
@@ -257,9 +262,9 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 	}
 
 	@Override
-	public Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId) {
+	public Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, ProCompanyUser proCompanyUser) {
 		PageHelper.startPage(pageNum,pageSize,orderBy);
-		return proCompanyUserDao.selectPage(companyId);
+		return proCompanyUserDao.selectPage(proCompanyUser);
 	}
 	
 	@Override
@@ -269,7 +274,7 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 	
 	@LcnTransaction
 	@Override
-	public Integer addCpUser(ProCompanyUser proCompanyUser,ProPertificate proPertificate,String userAccount,String tenantId) throws Exception{
+	public Integer addCpUser(ProCompanyUser proCompanyUser,List<ProPertificate> listproPertificates,String userAccount,String tenantId) throws Exception{
 
 		com.cmcc.common.bean.SysUser user = new com.cmcc.common.bean.SysUser();
 		user.setUserAccount(userAccount);
@@ -284,30 +289,33 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 		proCompanyUser.setCpUserId(IdGenerateUtil.uuid3());
 		proCompanyUser.setUserId(obj.get("userId").toString());
 		proCompanyUserDao.insertSelective(proCompanyUser);
-		
-		String certificateId = IdGenerateUtil.uuid3();
-		proPertificate.setCertificateId(certificateId);
-		proPertificate.setFkcertId(obj.get("userId").toString());
-		List<FileStore> listFileStore = new ArrayList<>();
-		if (proPertificate.getFileUrl() != null) {
-			String[] urls = proPertificate.getFileUrl().split("#");
-			for (String url :urls) {
-				FileStore fileStore = new FileStore();
-				fileStore.setFileId(IdGenerateUtil.uuid3());
-				fileStore.setToId(certificateId);
-				fileStore.setFileUrl(url);
-				fileStore.setFileType("图片");
-				fileStore.setSendTime(new Date());
-				fileStore.setStatus("0");
-				listFileStore.add(fileStore);
+		if (listproPertificates.size() > 0 && !listproPertificates.isEmpty()) {
+			for (ProPertificate proPertificate: listproPertificates) {
+				String certificateId = IdGenerateUtil.uuid3();
+				proPertificate.setCertificateId(certificateId);
+				proPertificate.setFkcertId(obj.get("userId").toString());
+				List<FileStore> listFileStore = new ArrayList<>();
+				if (proPertificate.getFileUrl() != null) {
+					String[] urls = proPertificate.getFileUrl().split("#");
+					for (String url :urls) {
+						FileStore fileStore = new FileStore();
+						fileStore.setFileId(IdGenerateUtil.uuid3());
+						fileStore.setToId(certificateId);
+						fileStore.setFileUrl(url);
+						fileStore.setFileType("图片");
+						fileStore.setSendTime(new Date());
+						fileStore.setStatus("0");
+						listFileStore.add(fileStore);
+					}
+				}
+				proPertificateDao.addProPertificate(proPertificate);
+				Boolean flag = false;
+				if (listFileStore.size() > 0 && !listFileStore.isEmpty()) {
+					flag = fileStoreDao.insertObj(listFileStore);
+				}
+				log.info("批量更新图片是否成功："+flag);
 			}
 		}
-		proPertificateDao.addProPertificate(proPertificate);
-		Boolean flag = false;
-		if (listFileStore.size() > 0 && !listFileStore.isEmpty()) {
-			flag = fileStoreDao.insertObj(listFileStore);
-		}
-		log.info("批量更新图片是否成功："+flag);
 		return 1;
 		
 	}

@@ -3,6 +3,7 @@ package com.cmcc.qualification.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.cmcc.qualification.entity.FileStore;
 
@@ -29,4 +30,11 @@ public interface FileStoreDao {
 	Boolean insertObj(List<FileStore> listFileStore);
 
 	void deleteByToId(String certificateId);
+
+	/**
+	 * 根据资质id查询所有资质图片地址
+	 * @param certificateId
+	 * @return
+	 */
+	String selectByCertificateId(@Param("certificateId")String certificateId);
 }
