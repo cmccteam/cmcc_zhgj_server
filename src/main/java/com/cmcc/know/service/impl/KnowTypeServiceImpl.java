@@ -58,8 +58,8 @@ public class KnowTypeServiceImpl implements KnowTypeService {
     }
 
     @Override
-    public List<KnowType> getAll() {
-        return knowTypeDao.selectAll();
+    public List<KnowType> getAll(KnowType knowType) {
+        return knowTypeDao.selectAll(knowType);
     }
 
 }

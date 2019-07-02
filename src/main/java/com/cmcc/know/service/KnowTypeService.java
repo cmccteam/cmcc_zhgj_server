@@ -49,7 +49,7 @@ public interface KnowTypeService {
      * @author zengzhibin
      * @date 2019年3月1日
      */
-    public List<KnowType> getAll();
+    public List<KnowType> getAll(KnowType knowType);
 
 
 }

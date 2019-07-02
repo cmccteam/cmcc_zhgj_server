@@ -9,7 +9,19 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <collection property="childen" 
+				ofType="com.cmcc.know.entity.KnowType"
+				select="selectTree"
+				column="type_id"/>
     </resultMap>
+    
+    <select id="selectTree" parameterType="java.lang.String" resultMap="BaseResultMap">
+	     select
+        <include refid="Base_Column_List"/>
+        from da_know_type
+        where parent_id = #{typeId,jdbcType=VARCHAR} order by type_id asc
+	  </select>
+	  
     <sql id="Base_Column_List">
     type_id, code, type_name, parent_id, create_time, create_user, remark
   </sql>
@@ -31,6 +43,20 @@
         select
         <include refid="Base_Column_List"/>
         from da_know_type
+        <where>
+        	<if test="code != null">
+                AND code = #{code,jdbcType=VARCHAR}
+            </if>
+            <if test="typeName != null">
+                AND type_name = #{typeName,jdbcType=VARCHAR}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId,jdbcType=VARCHAR}
+            </if>
+            <if test="remark != null">
+                AND remark = #{remark,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">

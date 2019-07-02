@@ -20,7 +20,7 @@ public interface KnowTypeDao {
 
     int updateByPrimaryKey(KnowType record);
 
-    List<KnowType> selectAll();
+    List<KnowType> selectAll(KnowType knowType);
 
     /**
      * @param typeName 类型名称

@@ -1,6 +1,9 @@
 package com.cmcc.know.entity;
 
 import java.util.Date;
+import java.util.TreeSet;
+
+import org.apache.commons.lang3.StringUtils;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,18 +14,18 @@ import io.swagger.annotations.ApiModelProperty;
  * @author zengzhibin
  * @date 2019年3月5日
  */
-public class KnowType {
+public class KnowType implements Comparable<KnowType>{
 	
 	@ApiModelProperty(hidden=true)
     private String typeId;
 
-	@ApiModelProperty(value="类型编码",required=true)
+	@ApiModelProperty(value="类型编码",required=false)
     private String code;
 
-	@ApiModelProperty(value="类型名称",required=true)
+	@ApiModelProperty(value="类型名称",required=false)
     private String typeName;
 
-	@ApiModelProperty(value="父类型ID",required=true)
+	@ApiModelProperty(value="父类型ID",required=false)
     private String parentId;
 
     @ApiModelProperty(hidden=true)
@@ -34,7 +37,20 @@ public class KnowType {
     @ApiModelProperty(value="备注",required=false)
     private String remark;
 
-    public String getTypeId() {
+    @ApiModelProperty(hidden=true)
+    private TreeSet<KnowType> childen;
+    
+    
+    
+    public TreeSet<KnowType> getChilden() {
+		return childen;
+	}
+
+	public void setChilden(TreeSet<KnowType> childen) {
+		this.childen = childen;
+	}
+
+	public String getTypeId() {
         return typeId;
     }
 
@@ -89,4 +105,9 @@ public class KnowType {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	@Override
+	public int compareTo(KnowType arg) {
+		return StringUtils.compare(arg.typeId, this.typeId);
+	}
 }

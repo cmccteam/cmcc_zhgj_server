@@ -28,9 +28,9 @@ public class KnowTypeController {
 
     @ApiOperation(value = "获取资料类型", notes = "获取所有资料类型")
     @GetMapping
-    public Result getAll() {
+    public Result getAll(KnowType knowType) {
         try {
-            List<KnowType> list = knowTypeService.getAll();
+            List<KnowType> list = knowTypeService.getAll(knowType);
             return Result.success(list);
         } catch (Exception e) {
             log.error(e.getMessage());
