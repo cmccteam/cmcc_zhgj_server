@@ -201,4 +201,11 @@
     delete from file_store
     where to_id = #{certificateId,jdbcType=VARCHAR}
   </delete>
+  
+  <select id="selectByCertificateId" parameterType="java.lang.String" resultType="java.lang.String">
+    select 
+	  GROUP_CONCAT(file_url) fileUrl from file_store 
+	  where to_id = #{certificateId} 
+     GROUP BY to_id
+  </select>
 </mapper>

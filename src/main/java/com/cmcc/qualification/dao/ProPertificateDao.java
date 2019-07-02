@@ -1,7 +1,6 @@
 package com.cmcc.qualification.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,7 +28,7 @@ public interface ProPertificateDao {
 	 * @param userId
 	 * @return
 	 */
-	List<ProPertificate> selectAllProPertificateByUserId(String userId);
+	List<ProPertificate> selectAllProPertificateByUserId(@Param("userId") String userId);
 
 	/**
 	 * 根据个人资质信息id查询资质详情

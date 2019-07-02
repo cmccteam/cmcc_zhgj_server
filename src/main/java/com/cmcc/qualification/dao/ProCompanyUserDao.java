@@ -32,4 +32,6 @@ public interface ProCompanyUserDao {
 	List<Map<String, String>> selectUserList(ProCompanyUser proCompanyUser);
 
 	List<Map<String, Object>> selectList(@Param("comqId")String comqId);
+
+	ProCompanyUser selectByUserId(@Param("userId") String userId);
 }

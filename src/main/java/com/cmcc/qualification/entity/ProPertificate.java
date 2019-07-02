@@ -26,7 +26,7 @@ public class ProPertificate {
 	private String permitProject;
 	@ApiParam(hidden=true)
 	private Date firstDate;
-	@ApiParam(hidden=true)
+	@ApiParam(value="有效期",required = false)
 	private Date effectiveDate;
 	@ApiParam(value="图片路径(多张用#隔开)",required = false)
 	private String fileUrl;

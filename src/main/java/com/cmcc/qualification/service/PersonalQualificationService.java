@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cmcc.common.bean.BaseUser;
-import com.cmcc.common.bean.SysUser;
 import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
 import com.cmcc.qualification.vo.SysUserVo;
@@ -92,7 +90,7 @@ public interface PersonalQualificationService {
 	 */
 	Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId);
 
-	Integer addCpUser(ProCompanyUser proCompanyUser,ProPertificate proPertificate,String userAccount,String tenantId) throws Exception;
+	Integer addCpUser(ProCompanyUser proCompanyUser,List<ProPertificate> listproPertificates,String userAccount,String tenantId) throws Exception;
 
 	List<Map<String, String>> getUserList(ProCompanyUser proCompanyUser);
 

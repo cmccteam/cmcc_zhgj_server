@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cmcc.common.bean.BaseUser;
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.bean.ResultCode;
@@ -97,17 +98,16 @@ public class PersonalQualificationController{
      */
     @ApiOperation(value="添加施工人员与资质证书", notes="添加施工人员与资质证书")
 	@PutMapping(value = "/addCpUser")
-	public Result addCpUser(ProPertificate proPertificate, ProCompanyUser proCompanyUser,
+	public Result addCpUser(
+			@ApiParam(name="proPertificate",value="多个资质信息数组",required=true)
+			String proPertificate, 
+			ProCompanyUser proCompanyUser,
 			@ApiParam(name="userAccount",value="用户账号",required=true)
 			@RequestParam(value="userAccount",required=true)
 			String userAccount,@CurrentUser BaseUser baseUser){
     	try {
-    		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    		if (StringUtils.isNotBlank(proPertificate.getStringEffectiveDate())) {
-				Date effectiveDate = dateFormat.parse(proPertificate.getStringEffectiveDate());
-				proPertificate.setEffectiveDate(effectiveDate);
-			}
-    		Integer it = personalQualificationService.addCpUser(proCompanyUser,proPertificate,userAccount,baseUser.getTenantId());
+    		List<ProPertificate> listproPertificates = JSONObject.parseArray(proPertificate, ProPertificate.class);
+    		Integer it = personalQualificationService.addCpUser(proCompanyUser,listproPertificates,userAccount,baseUser.getTenantId());
     		if(it==1){
     			return Result.success();
     		}else{
@@ -207,7 +207,7 @@ public class PersonalQualificationController{
 		LOGGER.info("参数为:"+userId);
 		try {
 			SysUserVo sysUserVo = personalQualificationService.getUserinfo(userId);
-			if (sysUserVo.getSysUser() != null) {
+			if (sysUserVo != null) {
     			return Result.failure(ResultCode.SUCCESS, sysUserVo);
     		} else {
     			return Result.failure(ResultCode.RESULE_DATA_NONE);

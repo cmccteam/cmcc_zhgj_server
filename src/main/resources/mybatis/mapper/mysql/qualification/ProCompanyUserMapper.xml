@@ -18,6 +18,13 @@
     where cp_user_id = #{cpUserId,jdbcType=VARCHAR}
   </select>
   
+  <select id="selectByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_company_user
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  
   <select id="selectPage" parameterType="java.lang.String" resultType="map">
     select us.*,c.*,q.comq_name from pro_company_user us 
     LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
