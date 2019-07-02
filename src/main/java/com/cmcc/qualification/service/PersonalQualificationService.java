@@ -84,11 +84,11 @@ public interface PersonalQualificationService {
 	 * @param pageNum
 	 * @param pageSize
 	 * @param orderBy
-	 * @param companyId
+	 * @param proCompanyUser
 	 * @param baseUser
 	 * @return
 	 */
-	Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId);
+	Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, ProCompanyUser proCompanyUser);
 
 	Integer addCpUser(ProCompanyUser proCompanyUser,List<ProPertificate> listproPertificates,String userAccount,String tenantId) throws Exception;
 

@@ -262,9 +262,9 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 	}
 
 	@Override
-	public Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, String companyId) {
+	public Page<Map<String,String>> getPage(Integer pageNum, Integer pageSize, String orderBy, ProCompanyUser proCompanyUser) {
 		PageHelper.startPage(pageNum,pageSize,orderBy);
-		return proCompanyUserDao.selectPage(companyId);
+		return proCompanyUserDao.selectPage(proCompanyUser);
 	}
 	
 	@Override

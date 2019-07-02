@@ -25,13 +25,15 @@
     where user_id = #{userId,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectPage" parameterType="java.lang.String" resultType="map">
-    select us.*,c.*,q.comq_name from pro_company_user us 
-    LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+  <select id="selectPage" parameterType="com.cmcc.qualification.entity.ProCompanyUser" resultType="map">
+    select us.*,q.comq_name from pro_company_user us 
     LEFT JOIN pro_company_qua q ON q.comq_id=us.comq_id
     <where>
-    	<if test="companyId != null">
-	         and us.comq_id = #{companyId,jdbcType=VARCHAR}
+    	  <if test="comqId != null">
+	         and us.comq_id = #{comqId,jdbcType=VARCHAR}
+	      </if>
+	      <if test="userName != null">
+	         and us.user_name like CONCAT('%', #{userName}, '%')
 	      </if>
     </where>
   </select>

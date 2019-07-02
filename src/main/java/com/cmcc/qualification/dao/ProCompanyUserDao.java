@@ -27,7 +27,7 @@ public interface ProCompanyUserDao {
 
 	Integer deleteData(@Param("comqId")String comqId, @Param("userId")String userId);
 
-	Page<Map<String,String>> selectPage(@Param("companyId")String companyId);
+	Page<Map<String,String>> selectPage(ProCompanyUser proCompanyUser);
 
 	List<Map<String, String>> selectUserList(ProCompanyUser proCompanyUser);
 

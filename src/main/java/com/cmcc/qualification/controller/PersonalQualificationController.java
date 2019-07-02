@@ -65,11 +65,10 @@ public class PersonalQualificationController{
 			@ApiParam(name="orderBy",value="排序字段 ，‘order desc’",required=false)
 			@RequestParam(value="orderBy",required=false)
 			String orderBy,
-			@ApiParam(name="companyId",value="公司ID",required=false)
-			@RequestParam(value="companyId",required=false)
-			String companyId){
+			@ApiParam(name="proCompanyUser",value="根据需要传递相应参数",required=false)
+			ProCompanyUser proCompanyUser){
 		try {
-			Page<Map<String,String>> page = personalQualificationService.getPage(pageNum, pageSize, orderBy,companyId);
+			Page<Map<String,String>> page = personalQualificationService.getPage(pageNum, pageSize, orderBy,proCompanyUser);
 			return Result.failure(ResultCode.SUCCESS, page.toPageInfo());
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -203,6 +202,7 @@ public class PersonalQualificationController{
 	@GetMapping(path="/getUserinfo")
 	public Result selectPersonalQualificationByUserId(
 			@ApiParam(name="userId",value="用户id",required=true)
+			@RequestParam
 			String userId){
 		LOGGER.info("参数为:"+userId);
 		try {
