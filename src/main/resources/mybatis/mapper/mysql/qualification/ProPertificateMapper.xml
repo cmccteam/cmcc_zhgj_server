@@ -108,10 +108,12 @@
   
   <!-- 根据个人资质信息id查询资质详情 getPersonalQualificationInfo -->  
   <select id="getPersonalQualificationInfo" parameterType="java.lang.String" resultType="com.cmcc.qualification.entity.ProPertificate">
-    select a.certificateName,a.certificateCode,
+	select a.certificateId,a.fkcertId,a.certificateName,a.certificateCode,
 	a.jobCategory,a.permitProject,a.effectiveDate,a.remark,
 	GROUP_CONCAT(fileId) fileId,GROUP_CONCAT(fileUrl) fileUrl from (
 select 
+			p.certificate_id certificateId,
+			p.fkcert_id fkcertId,
       p.certificate_name as certificateName,
       p.certificate_code as certificateCode,
       p.job_category as jobCategory,
@@ -123,8 +125,9 @@ select
     from pro_certificate p 
          left join file_store f on p.certificate_id=f.to_id 
     where p.certificate_id = #{certificateId}
-) a GROUP BY a.certificateName,a.certificateCode,
+) a GROUP BY a.certificateId,a.fkcertId,a.certificateName,a.certificateCode,
 	a.jobCategory,a.permitProject,a.effectiveDate,a.remark
+	
   </select>
   
   <!-- delPersonalQuaInfo 根据个人资质id删除对应资质信息 -->

@@ -44,7 +44,7 @@ public class CompanyQualificationServiceImpl implements CompanyQualificationServ
 	}
 	
 	@Override
-	public ProCompanyQua getCompanyInfo(String comqId) {
+	public List<ProCompanyQua> getCompanyInfo(String comqId) {
 		return proCompanyQuaDao.getCompanyInfo(comqId);
 	}
 

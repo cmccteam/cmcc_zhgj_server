@@ -26,8 +26,11 @@
       remarks 
     from 
       pro_company_qua 
-    where 
-      comq_id = #{comqId};
+    <where>
+     <if test="comqId != null">
+     	and comq_id = #{comqId}
+     </if>
+    </where> 
   </select>
   
   <!-- selectAllProCompanyQuas 查询所有公司信息  -->

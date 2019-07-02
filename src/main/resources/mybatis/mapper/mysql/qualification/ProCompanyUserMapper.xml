@@ -19,8 +19,14 @@
   </select>
   
   <select id="selectPage" parameterType="java.lang.String" resultType="map">
-    select * from pro_company_user us LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
-    where comq_id = #{companyId,jdbcType=VARCHAR}
+    select us.*,c.*,q.comq_name from pro_company_user us 
+    LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+    LEFT JOIN pro_company_qua q ON q.comq_id=us.comq_id
+    <where>
+    	<if test="companyId != null">
+	         and us.comq_id = #{companyId,jdbcType=VARCHAR}
+	      </if>
+    </where>
   </select>
   
   <select id="selectList" parameterType="java.lang.String" resultType="map">

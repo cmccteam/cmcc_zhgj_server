@@ -29,7 +29,7 @@ public interface ProCompanyQuaDao {
 	 * @param comqId 公司id
 	 * @return 返回公司资质信息
 	 */
-	ProCompanyQua getCompanyInfo(String comqId);
+	List<ProCompanyQua> getCompanyInfo(@Param("comqId")String comqId);
 
 	/**
 	 * 新增公司信息

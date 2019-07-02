@@ -87,12 +87,13 @@ public class CompanyQualificationController{
 	@ApiOperation(value="查询公司资质信息", notes="用户点击确定公司名称时查询对应公司资质信息")
 	@GetMapping("/getCompanyInfo")
 	public Result selectCompanyQualificationByComqId(
-			@ApiParam(name="comqId",value="公司资质id",required=true)
+			@ApiParam(name="comqId",value="公司资质id",required=false)
+			@RequestParam(value="comqId",required=false)
 	        String comqId
 			){
 		LOGGER.info("参数为:"+comqId);
 		try {
-			ProCompanyQua proCompanyQua = companyQualificationService.getCompanyInfo(comqId);
+			List<ProCompanyQua> proCompanyQua = companyQualificationService.getCompanyInfo(comqId);
 			if (proCompanyQua != null) {
     			return Result.failure(ResultCode.SUCCESS, proCompanyQua);
     		} else {

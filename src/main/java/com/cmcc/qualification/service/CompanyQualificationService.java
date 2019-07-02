@@ -26,7 +26,7 @@ public interface CompanyQualificationService {
 	 * @param comqId 包含用户输入字段信息（公司资质id）
 	 * @return 公司资质信息对象
 	 */
-	ProCompanyQua getCompanyInfo(String comqId);
+	List<ProCompanyQua> getCompanyInfo(String comqId);
 
 	/**
 	 * 根据实体对象新增公司资质
