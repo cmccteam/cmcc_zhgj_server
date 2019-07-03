@@ -8,37 +8,40 @@ import java.util.Date;
  * @author zwq
  * @create 2019-06-24 15:14
  */
-public class ExamPaperPageResponse {
+public class MyExamPaperPageResponse {
+    /**
+     * 试卷ID
+     */
     private String paperId;
     /**
-     * 试卷名称
+     * 试卷名
      */
     private String paperTitle;
     /**
-     * 试卷简介
+     * 试卷描述
      */
     private String paperBrief;
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
-    private Date createTime;
-    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
-    private Date sendTime;
     /**
      * 备注
      */
     private String remark;
+    /**
+     * 考试人数
+     */
     private Integer total;
     /**
-     * 0已发布，1未发布，2已过期
+     * 状态（是否参与）
      */
     private String status;
     /**
-     * 知识分类ID
+     * 提交时间
      */
-    private String typeId;
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
+    private Date sendTime;
     /**
-     * 知识分类名称
+     * 总分数
      */
-    private String typeName;
+    private Integer score;
 
     public String getPaperId() {
         return paperId;
@@ -62,22 +65,6 @@ public class ExamPaperPageResponse {
 
     public void setPaperBrief(String paperBrief) {
         this.paperBrief = paperBrief;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
     }
 
     public String getRemark() {
@@ -104,19 +91,19 @@ public class ExamPaperPageResponse {
         this.status = status;
     }
 
-    public String getTypeId() {
-        return typeId;
+    public Date getSendTime() {
+        return sendTime;
     }
 
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
     }
 
-    public String getTypeName() {
-        return typeName;
+    public Integer getScore() {
+        return score;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 }

@@ -1,5 +1,6 @@
 package com.cmcc.exam.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,8 +25,10 @@ public class ExamPaper {
     @ApiModelProperty(hidden = true)
     private String createName;
     @ApiModelProperty(hidden = true)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
     @ApiModelProperty(hidden = true)
+    @JsonFormat(pattern = "yyyy/MM/dd HH:mm:ss", timezone = "GMT+8")
     private Date sendTime;
     @ApiModelProperty(value = "备注")
     private String remark;
