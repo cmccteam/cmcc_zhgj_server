@@ -3,7 +3,6 @@ package com.cmcc.qualification.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.multipart.MultipartFile;
 
 import com.cmcc.qualification.entity.ProCompanyUser;
 import com.cmcc.qualification.entity.ProPertificate;
@@ -48,14 +47,6 @@ public interface PersonalQualificationService {
 	 */
 	Map<String, List<UserInfoVo>> allUserinfo();
 
-	/**
-	 * 导入添加个人资质信息
-	 * @param fileName
-	 * @param file
-	 * @return
-	 * @throws Exception 
-	 */
-	Boolean batchImportUsers(String fileName, MultipartFile file) throws Exception;
 
 	/**
 	 * 根据用户id增加个人资质信息
@@ -77,7 +68,7 @@ public interface PersonalQualificationService {
 	 * @param certificateId 资质信息id
 	 * @return
 	 */
-	Boolean delPersonalQualificationInfo(String certificateId,String comqId,String userId) throws Exception;
+	Boolean delPersonalQualificationInfo(String comqId,String userId) throws Exception;
 
 	/**
 	 * 分页获取个人信息
@@ -95,5 +86,12 @@ public interface PersonalQualificationService {
 	List<Map<String, String>> getUserList(ProCompanyUser proCompanyUser);
 
 	Integer saveProPertificate(ProPertificate proPertificate, String certificateId);
+
+	/**
+	 * 根据个人资质id删除个人资质
+	 * @param certificateId
+	 * @return
+	 */
+	Integer delProPertificateByCertificateId(String certificateId);
 
 }

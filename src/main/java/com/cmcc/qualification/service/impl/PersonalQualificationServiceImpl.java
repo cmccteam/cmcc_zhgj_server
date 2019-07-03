@@ -1,6 +1,5 @@
 package com.cmcc.qualification.service.impl;
 
-import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,16 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.cmcc.common.bean.Result;
 import com.cmcc.common.service.SystemService;
@@ -189,32 +183,6 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 		return Sort.sortUser(resultMap);
 	}
 	
-    @Transactional(readOnly = false,rollbackFor = Exception.class)
-	@Override
-	public Boolean batchImportUsers(String fileName, MultipartFile file) throws Exception {
-		
-    	boolean notNull = false;
-        List<SysUser> userList = new ArrayList<SysUser>();
-        if (!fileName.matches("^.+\\.(?i)(xls)$") && !fileName.matches("^.+\\.(?i)(xlsx)$")) {
-            throw new Exception("上传文件格式不正确");
-        }
-        boolean isExcel2003 = true;
-        if (fileName.matches("^.+\\.(?i)(xlsx)$")) {
-            isExcel2003 = false;
-        }
-        InputStream is = file.getInputStream();
-        Workbook wb = null;
-        if (isExcel2003) {
-            wb = new HSSFWorkbook(is);
-        } else {
-            wb = new XSSFWorkbook(is);
-        }
-        Sheet sheet = wb.getSheetAt(0);
-        if(sheet!=null){
-            notNull = true;
-        }
-    	return null;
-	}
 
 	@Override
 	public Integer addProPertificate(ProPertificate proPertificate, String userId) {
@@ -251,9 +219,13 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 
 	@LcnTransaction
 	@Override
-	public Boolean delPersonalQualificationInfo(String certificateId,String comqId,String userId) throws Exception{
+	public Boolean delPersonalQualificationInfo(String comqId,String userId) throws Exception{
 		proCompanyUserDao.deleteData(comqId,userId);
-		proPertificateDao.delPersonalQuaInfo(certificateId);
+		proPertificateDao.deleteByFkcertId(userId);
+		List<ProPertificate> list = proPertificateDao.selectAllProPertificateByUserId(userId);
+		for (ProPertificate proPertificate : list) {
+			fileStoreDao.deleteByToId(proPertificate.getCertificateId());
+		}
 		Integer it = systemService.removeUser(userId);
 		if(it!=1){
 			throw new Exception("根据用户ID删除用户异常，分布式事物回滚");
@@ -345,5 +317,11 @@ public class PersonalQualificationServiceImpl implements PersonalQualificationSe
 		}
 		log.info("批量更新图片是否成功："+flag);
 		return f;
+	}
+
+	@Override
+	public Integer delProPertificateByCertificateId(String certificateId) {
+		proPertificateDao.delPersonalQuaInfo(certificateId);
+		return fileStoreDao.deleteByToId(certificateId);
 	}
 }

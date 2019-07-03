@@ -42,7 +42,7 @@ public interface ProPertificateDao {
 	 * @param certificateId 资质信息id
 	 * @return
 	 */
-	Boolean delPersonalQuaInfo(String certificateId);
+	Boolean delPersonalQuaInfo(@Param("certificateId")String certificateId);
 
 	/**
 	 * 根据公司资质删除工资资质信息
