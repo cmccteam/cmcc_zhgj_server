@@ -11,7 +11,7 @@ import com.cmcc.exam.dao.*;
 import com.cmcc.exam.entity.*;
 import com.cmcc.exam.request.SubmitPaperRequest;
 import com.cmcc.exam.request.SubmitPaperResultRequest;
-import com.cmcc.exam.response.ExamPaperPageResponse;
+import com.cmcc.exam.response.MyExamPaperPageResponse;
 import com.cmcc.exam.service.ExamMainService;
 import com.cmcc.know.dao.KnowTypeDao;
 import com.cmcc.know.entity.KnowType;
@@ -77,9 +77,10 @@ public class ExamMainServiceImpl implements ExamMainService {
     private KnowTypeDao knowTypeDao;
 
     @Override
-    public Page<ExamPaper> getExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId) {
+    public Result getExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String typeId) {
         PageHelper.startPage(pageNum, pageSize, orderBy);
-        return examPaperDao.selectPage(title, userId);
+        Page<ExamPaper> page = examPaperDao.selectPage(title, typeId);
+        return Result.success(page.toPageInfo());
     }
 
     @Override
@@ -87,7 +88,7 @@ public class ExamMainServiceImpl implements ExamMainService {
         if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
             return Result.failure(ResultCode.USER_NOT_EXIST);
         PageHelper.startPage(pageNum, pageSize, orderBy);
-        Page<ExamPaperPageResponse> page = examPaperDao.selectMyPage(title, baseUser.getUserId(), typeId, status);
+        Page<MyExamPaperPageResponse> page = examPaperDao.selectMyPage(title, baseUser.getUserId(), typeId, status);
         return Result.success(page.toPageInfo());
     }
 

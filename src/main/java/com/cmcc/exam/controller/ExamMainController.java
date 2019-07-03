@@ -30,9 +30,30 @@ public class ExamMainController {
     @Autowired
     private ExamMainService examMainService;
 
-    @ApiOperation(value = "分页获取试卷数据", notes = "分页带条件查询试卷数据")
-    @GetMapping("/getPaperPage")
+    @ApiOperation(value = "分页获取所有试卷数据", notes = "分页获取所有试卷数据")
+    @GetMapping("/getExamPaperPage")
     public Result getExamPaperPage(
+            @ApiParam(name = "pageNum", value = "页码，从1开始，默认为1", required = true)
+            @RequestParam(value = "pageNum", defaultValue = "1")
+                    Integer pageNum,
+            @ApiParam(name = "pageSize", value = "每页大小，默认为10", required = true)
+            @RequestParam(value = "pageSize", defaultValue = "10")
+                    Integer pageSize,
+            @ApiParam(name = "orderBy", value = "排序字段 ，‘order desc’", required = false)
+            @RequestParam(value = "orderBy", required = false)
+                    String orderBy,
+            @ApiParam(name = "title", value = "试卷名称", required = false)
+            @RequestParam(value = "title", required = false)
+                    String title,
+            @ApiParam(name = "typeId", value = "知识类型ID", required = false)
+            @RequestParam(value = "typeId", required = false)
+                    String typeId) {
+        return examMainService.getExamPaperPage(pageNum, pageSize, orderBy, title, typeId);
+    }
+
+    @ApiOperation(value = "分页获取我的试卷数据", notes = "分页获取我的试卷数据")
+    @GetMapping("/getMyExamPaperPage")
+    public Result getMyExamPaperPage(
             @ApiParam(name = "pageNum", value = "页码，从1开始，默认为1", required = true)
             @RequestParam(value = "pageNum", defaultValue = "1")
                     Integer pageNum,

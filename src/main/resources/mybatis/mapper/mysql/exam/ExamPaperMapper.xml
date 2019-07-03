@@ -15,35 +15,37 @@
     </resultMap>
     <sql id="Base_Column_List">
     paper_id, paper_title, paper_brief, create_name, create_time, send_time, remark, 
-    total
+    total, status, type_id
   </sql>
 
     <!-- 分页查询所有考试列表-->
-    <select id="selectPage" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="selectPage" parameterType="java.lang.String" resultType="com.cmcc.exam.response.ExamPaperPageResponse">
         select
-        ep.paper_id,
-        ep.paper_title,
-        ep.paper_brief,
-        ep.create_name,
-        ep.create_time,
-        ep.send_time,
-        ep.remark,
-        ep.total,
-        ep.status
+        ep.paper_id AS paperId,
+        ep.paper_title AS paperTitle,
+        ep.paper_brief AS paperBrief,
+        ep.create_time AS createTime,
+        ep.send_time AS sendTime,
+        ep.remark AS remark,
+        ep.total AS total,
+        ep.status AS status,
+        ep.type_id AS typeId,
+        dkt.type_name AS typeName
         from da_exam_paper ep
-        LEFT JOIN da_exam_user eu on eu.paper_id=ep.paper_id
+        LEFT JOIN da_know_type AS dkt ON ep.type_id = dkt.type_id
         <where>
             <if test="paperTitle != null">
                 AND ep.paper_title like CONCAT('%',#{paperTitle},'%')
             </if>
-            <if test="userId != null">
-                AND eu.user_id=#{userId}
+            <if test="typeId != null">
+                AND ep.type_id=#{typeId}
             </if>
         </where>
     </select>
 
-    <!-- 分页查询所有考试列表-->
-    <select id="selectMyPage" parameterType="java.lang.String" resultType="com.cmcc.exam.response.ExamPaperPageResponse">
+    <!-- 分页查询我的考试列表-->
+    <select id="selectMyPage" parameterType="java.lang.String"
+            resultType="com.cmcc.exam.response.MyExamPaperPageResponse">
         select
         ep.paper_id paperId,
         ep.paper_title paperTitle,

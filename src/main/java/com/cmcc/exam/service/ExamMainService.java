@@ -6,7 +6,6 @@ import com.cmcc.common.bean.Result;
 import com.cmcc.exam.entity.ExamLibUser;
 import com.cmcc.exam.entity.ExamPaper;
 import com.cmcc.exam.request.SubmitPaperRequest;
-import com.github.pagehelper.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public interface ExamMainService {
      * @author zengzhibin
      * @date 2019年2月27日
      */
-    public Page<ExamPaper> getExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String userId);
+    Result getExamPaperPage(Integer pageNum, Integer pageSize, String orderBy, String title, String typeId);
 
     /**
      * @param pageNum  页码从1开始
