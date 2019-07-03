@@ -29,7 +29,7 @@ public interface FileStoreDao {
      */
 	Boolean insertObj(List<FileStore> listFileStore);
 
-	void deleteByToId(String certificateId);
+	Integer deleteByToId(String certificateId);
 
 	/**
 	 * 根据资质id查询所有资质图片地址

@@ -10,13 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.cmcc.common.bean.BaseUser;
@@ -145,12 +145,15 @@ public class PersonalQualificationController{
      * @param userId
      * @return
      */
-    /*@ApiOperation(value="删除施工人员关联", notes="删除施工人员关联")
-	@DeleteMapping(value = "/delCpUser")
-	public Result delCpUser(String comqId,String userId){
+    @ApiOperation(value="删除个人资质", notes="删除个人资质")
+	@DeleteMapping(value = "/delProPertificate")
+	public Result delProPertificate(
+			@ApiParam(name="certificateId",value="个人资质id",required=true)
+	        @RequestParam(value="certificateId",required=true)
+	        String certificateId){
     	try {
-    		Integer it = personalQualificationService.delCpUser(comqId,userId);
-    		if(it>0){
+    		Integer it = personalQualificationService.delProPertificateByCertificateId(certificateId);
+    		if(it>=0){
     			return Result.success();
     		}else{
     			return Result.failure(ResultCode.DATA_IS_WRONG);
@@ -159,7 +162,7 @@ public class PersonalQualificationController{
 			e.printStackTrace();
 		}
 		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
-	}*/
+	}
     
 	/**
 	 * @Description: 用户根据输入的姓名查询对应用户的信息
@@ -198,7 +201,7 @@ public class PersonalQualificationController{
 	 * @author liuhaihe
      * @date 2019年2月28日
 	 */
-	@ApiOperation(value="id查询用户信息", notes="获取用户id查询对应用户的信息,可能有多条，暂时取第一条展示")
+	@ApiOperation(value="id查询用户信息", notes="获取用户id查询对应用户的信息")
 	@GetMapping(path="/getUserinfo")
 	public Result selectPersonalQualificationByUserId(
 			@ApiParam(name="userId",value="用户id",required=true)
@@ -358,9 +361,6 @@ public class PersonalQualificationController{
 	@ApiOperation(value="删除个人信息与资质信息", notes="删除个人信息与资质信息")
 	@PostMapping(path="/delQuaInfo")
 	public Result delPersonalQualificationInfo(
-			@ApiParam(name="certificateId",value="资质信息id",required=true)
-			@RequestParam(value="certificateId",required=true)
-			String certificateId,
 			@ApiParam(name="comqId",value="施工单位id",required=true)
 			@RequestParam(value="comqId",required=true)
 			String comqId,
@@ -368,7 +368,7 @@ public class PersonalQualificationController{
 			@RequestParam(value="userId",required=true)
 			String userId){
 		try {
-			Boolean flag = personalQualificationService.delPersonalQualificationInfo(certificateId,comqId,userId);
+			Boolean flag = personalQualificationService.delPersonalQualificationInfo(comqId,userId);
 			if (flag == true) {
 				return Result.success();
     		} else {
@@ -381,28 +381,6 @@ public class PersonalQualificationController{
 	}
 	
 	
-	/**
-	 * @Description: 导入添加个人资质
-	 * @return 
-	 * @author liuhaihe
-     * @date 2019年2月28日
-	 */
-	@ApiOperation(value="导入添加", notes="导入添加个人资质")
-	@GetMapping(path="/importUsers")
-	public Result importUsers(@RequestParam("file") MultipartFile file){
-		try {
-	        String fileName = file.getOriginalFilename();
-			Boolean  flag = personalQualificationService.batchImportUsers(fileName, file);
-			if (flag) {
-				return Result.success();
-    		} else {
-    			return Result.failure(ResultCode.ERROR);
-    		}
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-		return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
-	}
 	
 	/**
 	 * @Description: 修改个人的资质信息
