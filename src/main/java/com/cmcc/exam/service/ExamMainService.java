@@ -68,7 +68,7 @@ public interface ExamMainService {
      * @author zengzhibin
      * @date 2019年2月27日
      */
-    public Integer delete(String paperId);
+    Result delete(String paperId);
 
     /**
      * @param rows 排行榜展示数量
@@ -132,4 +132,24 @@ public interface ExamMainService {
      * @return
      */
     Result updatePaperStatus(String paperId, String status);
+
+    /**
+     * 分页获取题库
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param orderBy
+     * @param libTitle
+     * @param typeId
+     * @return
+     */
+    Result getExamLibPage(Integer pageNum, Integer pageSize, String orderBy, String libTitle, String typeId);
+
+    /**
+     * 删除题库
+     *
+     * @param libId 题库ID
+     * @return
+     */
+    Result deleteExamLib(String libId);
 }

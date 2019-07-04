@@ -240,4 +240,29 @@
       del_flag = #{delFlag,jdbcType=VARCHAR}
     where lib_id = #{libId,jdbcType=VARCHAR}
   </update>
+
+    <select id="getExamLibPage" resultType="com.cmcc.exam.response.ExamLibPageResponse">
+        select
+        del.lib_id AS libId,
+        del.type_id AS typeId,
+        dkt.type_name AS typeName,
+        del.lib_type AS libType,
+        del.lib_title AS libTitle,
+        del.lib_content_one AS libContentOne,
+        del.lib_content_two AS libContentTwo,
+        del.lib_content_three AS libContentThree,
+        del.lib_content_four AS libContentFour,
+        del.lib_ok AS libOk,
+        del.score AS score,
+        del.create_time AS createTime
+        from da_exam_lib AS del
+        LEFT JOIN da_know_type AS dkt ON del.type_id = dkt.type_id
+        WHERE del.del_flag = "0"
+        <if test="libTitle != null">
+            AND del.lib_title LIKE concat("%", #{libTitle}, "%")
+        </if>
+        <if test="typeId != null">
+            AND del.type_id = #{typeId}
+        </if>
+    </select>
 </mapper>

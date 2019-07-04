@@ -17,6 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -97,18 +102,7 @@ public class ExamMainController {
     public Result deleteExamPaper(
             @ApiParam(name = "paperId", value = "试卷ID", required = true)
             @PathVariable String paperId) {
-        try {
-            Integer it = examMainService.delete(paperId);
-            if (it == 1) {
-                return Result.success();
-            } else {
-                return Result.failure(ResultCode.DATA_NOT_DEL);
-            }
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+        return examMainService.delete(paperId);
     }
 
     @ApiOperation(value = "导入题库", notes = "导入题库")
@@ -197,5 +191,65 @@ public class ExamMainController {
                                     @RequestParam(value = "status", required = true)
                                             String status) {
         return examMainService.updatePaperStatus(paperId, status);
+    }
+
+    @ApiOperation(value = "下载题库模板", notes = "下载题库模板")
+    @GetMapping("/downloadLibTemplate")
+    public void downloadLibTemplate(HttpServletResponse response) {
+        InputStream is = null;
+        OutputStream os = null;
+        try {
+            String fileName = "智慧工建在线考试题库模板.xlsx";
+            is = ClassLoader.getSystemResourceAsStream("META-INF/resources/" + fileName);
+            response.reset();
+            response.setContentType("application/octet-stream");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+
+            os = response.getOutputStream();
+            byte[] buff = new byte[1024];
+            int i = 0;
+            while ((i = is.read(buff)) != -1) {
+                os.write(buff, 0, i);
+                os.flush();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (os != null) os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @ApiOperation(value = "分页获取题库", notes = "分页获取题库")
+    @GetMapping("/getExamLibPage")
+    public Result getExamLibPage(
+            @ApiParam(name = "pageNum", value = "页码，从1开始，默认为1", required = true)
+            @RequestParam(value = "pageNum", defaultValue = "1")
+                    Integer pageNum,
+            @ApiParam(name = "pageSize", value = "每页大小，默认为10", required = true)
+            @RequestParam(value = "pageSize", defaultValue = "10")
+                    Integer pageSize,
+            @ApiParam(name = "orderBy", value = "排序字段 ，‘order desc’", required = false)
+            @RequestParam(value = "orderBy", required = false)
+                    String orderBy,
+            @ApiParam(name = "libTitle", value = "题目标题", required = false)
+            @RequestParam(value = "libTitle", required = false)
+                    String libTitle,
+            @ApiParam(name = "typeId", value = "知识类型ID", required = false)
+            @RequestParam(value = "typeId", required = false)
+                    String typeId) {
+        return examMainService.getExamLibPage(pageNum, pageSize, orderBy, libTitle, typeId);
+    }
+
+    @ApiOperation(value = "删除题库", notes = "删除题库")
+    @DeleteMapping("/deleteExamLib")
+    public Result deleteExamLib(@ApiParam(name = "libId", value = "题库ID", required = true)
+                                @RequestParam String libId) {
+        return examMainService.deleteExamLib(libId);
     }
 }
