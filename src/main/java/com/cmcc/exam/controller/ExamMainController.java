@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Api(value = "知识竞赛接口")
 @RestController
@@ -195,16 +196,19 @@ public class ExamMainController {
 
     @ApiOperation(value = "下载题库模板", notes = "下载题库模板")
     @GetMapping("/downloadLibTemplate")
-    public void downloadLibTemplate(HttpServletResponse response) {
+    public void downloadLibTemplate(@ApiParam(name = "type", value = "类型 0文件流 1文件", defaultValue = "0", allowableValues = "0, 1")
+                                    @RequestParam(name = "type", required = false, defaultValue = "0")
+                                            Integer type, HttpServletResponse response) {
         InputStream is = null;
         OutputStream os = null;
         try {
             String fileName = "智慧工建在线考试题库模板.xlsx";
-            is = ClassLoader.getSystemResourceAsStream("META-INF/resources/" + fileName);
+            is = ClassLoader.getSystemResourceAsStream("META-INF/resources/template.xlsx");
             response.reset();
-            response.setContentType("application/octet-stream");
-            response.setCharacterEncoding("utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+            if (type != null && type.equals(1)) {
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));
+            }
 
             os = response.getOutputStream();
             byte[] buff = new byte[1024];
@@ -246,10 +250,10 @@ public class ExamMainController {
         return examMainService.getExamLibPage(pageNum, pageSize, orderBy, libTitle, typeId);
     }
 
-    @ApiOperation(value = "删除题库", notes = "删除题库")
+    @ApiOperation(value = "批量删除题库", notes = "批量删除题库")
     @DeleteMapping("/deleteExamLib")
-    public Result deleteExamLib(@ApiParam(name = "libId", value = "题库ID", required = true)
-                                @RequestParam String libId) {
-        return examMainService.deleteExamLib(libId);
+    public Result deleteExamLib(@ApiParam(name = "libIds", value = "题库ID", required = true)
+                                @RequestParam Set<String> libIds) {
+        return examMainService.deleteExamLib(libIds);
     }
 }

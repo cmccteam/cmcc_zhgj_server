@@ -265,4 +265,11 @@
             AND del.type_id = #{typeId}
         </if>
     </select>
+
+    <delete id="deleteExamLib" parameterType="java.util.Set">
+        UPDATE da_exam_lib SET del_flag = '1' WHERE lib_id IN
+        <foreach collection="libIds" open="(" close=")" item="libId" separator=",">
+            #{libId}
+        </foreach>
+    </delete>
 </mapper>

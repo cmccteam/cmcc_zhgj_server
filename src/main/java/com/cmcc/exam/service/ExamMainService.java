@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ClassName: ExamMainService
@@ -146,10 +147,10 @@ public interface ExamMainService {
     Result getExamLibPage(Integer pageNum, Integer pageSize, String orderBy, String libTitle, String typeId);
 
     /**
-     * 删除题库
+     * 批量删除题库
      *
-     * @param libId 题库ID
+     * @param libIds 题库ID
      * @return
      */
-    Result deleteExamLib(String libId);
+    Result deleteExamLib(Set<String> libIds);
 }
