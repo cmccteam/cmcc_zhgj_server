@@ -2,6 +2,7 @@ package com.cmcc.exam.dao;
 
 import com.cmcc.exam.entity.ExamLibPaper;
 import com.cmcc.exam.entity.ExamUser;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -78,4 +79,7 @@ public interface ExamUserDao {
      * @return
      */
     Integer totalScore(@Param("userId") String userId, @Param("paperId") String paperId);
+
+    @Delete("DELETE FROM da_exam_user WHERE paper_id = #{paperId}")
+    int deleteByPaperId(String paperId);
 }

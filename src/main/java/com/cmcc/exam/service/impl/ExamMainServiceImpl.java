@@ -11,6 +11,7 @@ import com.cmcc.exam.dao.*;
 import com.cmcc.exam.entity.*;
 import com.cmcc.exam.request.SubmitPaperRequest;
 import com.cmcc.exam.request.SubmitPaperResultRequest;
+import com.cmcc.exam.response.ExamLibPageResponse;
 import com.cmcc.exam.response.MyExamPaperPageResponse;
 import com.cmcc.exam.service.ExamMainService;
 import com.cmcc.know.dao.KnowTypeDao;
@@ -152,8 +153,12 @@ public class ExamMainServiceImpl implements ExamMainService {
 
     @Transactional
     @Override
-    public Integer delete(String paperId) {
-        return examPaperDao.deleteSendPaper(paperId);
+    public Result delete(String paperId) {
+        if (StringUtils.isBlank(paperId)) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        examPaperDao.deleteSendPaper(paperId);
+        examUserDao.deleteByPaperId(paperId);
+        examLibPaperDao.deleteByPaperId(paperId);
+        return Result.success();
     }
 
     @Override
@@ -424,6 +429,21 @@ public class ExamMainServiceImpl implements ExamMainService {
         }
         examPaper.setStatus(status);
         examPaperDao.updateByPrimaryKey(examPaper);
+        return Result.success();
+    }
+
+    @Override
+    public Result getExamLibPage(Integer pageNum, Integer pageSize, String orderBy, String libTitle, String typeId) {
+        Page<ExamLibPageResponse> page = PageHelper.startPage(pageNum, pageSize, orderBy).doSelectPage(() -> {
+            examLibDao.getExamLibPage(libTitle, typeId);
+        });
+        return Result.success(page.toPageInfo());
+    }
+
+    @Override
+    public Result deleteExamLib(String libId) {
+        if (StringUtils.isBlank(libId)) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        examLibDao.deleteExamLib(libId);
         return Result.success();
     }
 }

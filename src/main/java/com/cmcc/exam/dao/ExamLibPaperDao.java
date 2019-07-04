@@ -1,8 +1,9 @@
 package com.cmcc.exam.dao;
 
+import com.cmcc.exam.entity.ExamLibPaper;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.cmcc.exam.entity.ExamLibPaper;
 @Mapper
 public interface ExamLibPaperDao {
     int deleteByPrimaryKey(String id);
@@ -16,4 +17,7 @@ public interface ExamLibPaperDao {
     int updateByPrimaryKeySelective(ExamLibPaper record);
 
     int updateByPrimaryKey(ExamLibPaper record);
+
+    @Delete("DELETE FROM da_exam_lib_paper WHERE paper_id = #{paperId}")
+    int deleteByPaperId(String paperId);
 }
