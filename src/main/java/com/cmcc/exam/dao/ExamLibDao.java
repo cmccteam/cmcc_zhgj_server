@@ -2,11 +2,12 @@ package com.cmcc.exam.dao;
 
 import com.cmcc.exam.entity.ExamLib;
 import com.cmcc.exam.response.ExamLibPageResponse;
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface ExamLibDao {
@@ -32,6 +33,8 @@ public interface ExamLibDao {
 
     List<ExamLibPageResponse> getExamLibPage(@Param("libTitle") String libTitle, @Param("typeId") String typeId);
 
-    @Delete("UPDATE da_exam_lib SET del_flag = '1' WHERE lib_id = #{libId}")
-    int deleteExamLib(String libId);
+    int deleteExamLib(@Param("libIds") Set<String> libIds);
+
+    @Select("SELECT count(*) FROM da_exam_lib AS del WHERE del.type_id = #{typeId}")
+    int countByTypeId(String typeId);
 }

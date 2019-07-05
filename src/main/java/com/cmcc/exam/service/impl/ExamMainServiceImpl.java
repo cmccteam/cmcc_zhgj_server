@@ -96,8 +96,20 @@ public class ExamMainServiceImpl implements ExamMainService {
     @Transactional
     @Override
     public Result add(ExamPaper examPaper, BaseUser baseUser) {
-        if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
-            return Result.failure(ResultCode.USER_NOT_EXIST);
+        /*if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
+            return Result.failure(ResultCode.USER_NOT_EXIST);*/
+        if (examPaper == null) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(examPaper.getPaperTitle())) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(examPaper.getPaperBrief())) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(examPaper.getStatus())) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (!"0".equals(examPaper.getStatus()) && !"1".equals(examPaper.getStatus()) && !"2".equals(examPaper.getStatus()))
+            return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (StringUtils.isBlank(examPaper.getTypeId())) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (examPaper.getUserId() == null || examPaper.getUserId().length <= 0)
+            return Result.failure(ResultCode.PARAM_IS_INVALID);
+        if (examPaper.getRows() == null || examPaper.getRows() <= 0) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        int count = examLibDao.countByTypeId(examPaper.getTypeId());
+        if (count < examPaper.getRows()) return Result.failure(ResultCode.DATA_IS_WRONG);
         examPaper.setPaperId(IdGenerateUtil.uuid3());
         examPaper.setCreateName(baseUser.getUserId());
         examPaper.setCreateTime(new Date());
@@ -441,9 +453,9 @@ public class ExamMainServiceImpl implements ExamMainService {
     }
 
     @Override
-    public Result deleteExamLib(String libId) {
-        if (StringUtils.isBlank(libId)) return Result.failure(ResultCode.PARAM_IS_INVALID);
-        examLibDao.deleteExamLib(libId);
+    public Result deleteExamLib(Set<String> libIds) {
+        if (libIds == null || libIds.isEmpty()) return Result.failure(ResultCode.PARAM_IS_INVALID);
+        examLibDao.deleteExamLib(libIds);
         return Result.success();
     }
 }
