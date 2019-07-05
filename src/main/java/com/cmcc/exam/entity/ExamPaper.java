@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
+import java.util.Set;
 
 /**
  * ClassName: ExamPaper
@@ -40,7 +41,7 @@ public class ExamPaper {
     private String typeId;
 
     @ApiModelProperty(value = "考试用户", required = true)
-    private String[] userId;
+    private Set<String> userId;
     @ApiModelProperty(value = "考试题目数量", required = true)
     private Integer rows;
 
@@ -53,11 +54,11 @@ public class ExamPaper {
         this.rows = rows;
     }
 
-    public String[] getUserId() {
+    public Set<String> getUserId() {
         return userId;
     }
 
-    public void setUserId(String[] userId) {
+    public void setUserId(Set<String> userId) {
         this.userId = userId;
     }
 

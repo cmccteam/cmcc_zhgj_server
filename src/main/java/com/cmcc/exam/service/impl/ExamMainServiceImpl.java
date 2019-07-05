@@ -96,8 +96,8 @@ public class ExamMainServiceImpl implements ExamMainService {
     @Transactional
     @Override
     public Result add(ExamPaper examPaper, BaseUser baseUser) {
-        /*if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
-            return Result.failure(ResultCode.USER_NOT_EXIST);*/
+        if (baseUser == null || StringUtils.isBlank(baseUser.getUserId()))
+            return Result.failure(ResultCode.USER_NOT_EXIST);
         if (examPaper == null) return Result.failure(ResultCode.PARAM_IS_INVALID);
         if (StringUtils.isBlank(examPaper.getPaperTitle())) return Result.failure(ResultCode.PARAM_IS_INVALID);
         if (StringUtils.isBlank(examPaper.getPaperBrief())) return Result.failure(ResultCode.PARAM_IS_INVALID);
@@ -105,7 +105,7 @@ public class ExamMainServiceImpl implements ExamMainService {
         if (!"0".equals(examPaper.getStatus()) && !"1".equals(examPaper.getStatus()) && !"2".equals(examPaper.getStatus()))
             return Result.failure(ResultCode.PARAM_IS_INVALID);
         if (StringUtils.isBlank(examPaper.getTypeId())) return Result.failure(ResultCode.PARAM_IS_INVALID);
-        if (examPaper.getUserId() == null || examPaper.getUserId().length <= 0)
+        if (examPaper.getUserId() == null || examPaper.getUserId().isEmpty())
             return Result.failure(ResultCode.PARAM_IS_INVALID);
         if (examPaper.getRows() == null || examPaper.getRows() <= 0) return Result.failure(ResultCode.PARAM_IS_INVALID);
         int count = examLibDao.countByTypeId(examPaper.getTypeId());
@@ -113,7 +113,7 @@ public class ExamMainServiceImpl implements ExamMainService {
         examPaper.setPaperId(IdGenerateUtil.uuid3());
         examPaper.setCreateName(baseUser.getUserId());
         examPaper.setCreateTime(new Date());
-        examPaper.setTotal(examPaper.getUserId().length);
+        examPaper.setTotal(examPaper.getUserId().size());
         if (StringUtils.equals(examPaper.getStatus(), "0")) {//发布试卷
             examPaper.setSendTime(new Date());
         }
@@ -144,7 +144,7 @@ public class ExamMainServiceImpl implements ExamMainService {
         } else {
             examPaper.setCreateName(baseUser.getUserId());
             examPaper.setCreateTime(new Date());
-            examPaper.setTotal(examPaper.getUserId().length);
+            examPaper.setTotal(examPaper.getUserId().size());
             if (StringUtils.equals(examPaper.getStatus(), "0")) {//发布试卷
                 examPaper.setSendTime(new Date());
                 this.updateLibPaper(examPaper.getPaperId(), examPaper.getRows(), examPaper.getTypeId());//生成题目
