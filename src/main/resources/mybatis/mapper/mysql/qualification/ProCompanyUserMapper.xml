@@ -39,7 +39,9 @@
   </select>
   
   <select id="selectList" parameterType="java.lang.String" resultType="map">
-    select us.user_id comqId,us.user_name comqName,us.*,c.* from pro_company_user us LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+    <!-- select us.user_id comqId,us.user_name comqName,us.*,c.* from pro_company_user us LEFT JOIN pro_certificate c ON us.user_id=c.fkcert_id
+    where comq_id = #{comqId,jdbcType=VARCHAR} -->
+    select us.user_id comqId,us.user_name comqName,us.* from pro_company_user us 
     where comq_id = #{comqId,jdbcType=VARCHAR}
   </select>
   

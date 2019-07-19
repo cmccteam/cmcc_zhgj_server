@@ -53,6 +53,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public Integer add(Knowledge hnowledge) {
         hnowledge.setHnowId(IdGenerateUtil.uuid3());
+        hnowledge.setCreateTime(new Date());
         return knowledgeDao.insertSelective(hnowledge);
     }
 

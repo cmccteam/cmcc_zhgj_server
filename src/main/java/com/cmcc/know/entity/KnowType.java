@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -29,6 +32,8 @@ public class KnowType implements Comparable<KnowType>{
     private String parentId;
 
     @ApiModelProperty(hidden=true)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(hidden=true)

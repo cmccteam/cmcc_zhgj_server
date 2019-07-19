@@ -39,7 +39,7 @@ public class KnowTypeServiceImpl implements KnowTypeService {
         knowType.setCreateUser(baseUser.getUserId());
         knowType.setCreateTime(new Date());
         knowTypeDao.insert(knowType);
-        return Result.success();
+        return Result.success(knowType);
     }
 
     @Override
